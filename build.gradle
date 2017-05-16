@@ -144,6 +144,10 @@ allprojects {
 //evaluationDependsOn(':rest')
 //evaluationDependsOn(':web')
 
+dependencies {
+    compile project(':server')
+}
+
 configurations {
     providedRuntime
     all*.exclude group: '', module: 'servlet-api'
