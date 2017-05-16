@@ -1,6 +1,6 @@
 # Reference-Beacon
 
-##Setup
+## Setup
 
 Move or copy and paste `config/ogm.properties` to `server/src/main/resources/ogm.properties`. Then fill out the properties file.
 
