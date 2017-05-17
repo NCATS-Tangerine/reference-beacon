@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
@@ -17,6 +18,7 @@ import bio.knowledge.model.Concept;
 import bio.knowledge.model.Predicate;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.neo4j.Neo4jConcept;
+import bio.knowledge.server.model.InlineResponse200;
 import bio.knowledge.server.model.InlineResponse2001;
 import bio.knowledge.server.model.InlineResponse2002;
 import bio.knowledge.server.model.InlineResponse2003;
@@ -186,4 +188,21 @@ public class ControllerImpl {
 
 		return ResponseEntity.ok(responses);
 	}
+	
+	public ResponseEntity<List<InlineResponse200>> linkedTypes() {
+		List<InlineResponse200> responses = new ArrayList<InlineResponse200>();
+		
+		List<Map<String, Object>> counts = conceptRepository.apiCountBySemanticGroup();
+		
+		for (Map<String, Object> map : counts) {
+			InlineResponse200 response = new InlineResponse200();
+			response.setId((String) map.get("type"));
+			response.setFrequency((Integer) map.get("frequency"));
+			
+			responses.add(response);
+		}
+		
+        return ResponseEntity.ok(responses);
+    }
+	
 }
