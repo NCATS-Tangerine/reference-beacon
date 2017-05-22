@@ -8,6 +8,8 @@ The project is a Gradle build. Managing the project within Eclipse generally req
 
 Move or copy and paste `config/application.properties` and `config/ogm.properties`to `server/src/main/resources/application.properties` and `server/src/main/resources/ogm.properties`, respectively. Then customize the database credentials in the properties files to your needs. You can change the port on which this server is run in the `server/src/main/resources/application.properties` file.
 
+To run the database tests, you also need to copy the `config/ogm.properties` file to `database/src/test/resources/ogm.properties`.
+
 To run this server execute `gradle build` in the root directory, and then execute `java -jar build/libs/translator-knowledge-beacon-4.0.6.jar`. Then, navigate to `http://localhost:8080/api` in your browser. 
 
 ## Code Generation
