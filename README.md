@@ -10,7 +10,8 @@ Move or copy and paste `config/application.properties` and `config/ogm.propertie
 
 To run the database tests, you also need to copy the `config/ogm.properties` file to `database/src/test/resources/ogm.properties`.
 
-To run this server execute `gradle build` in the root directory, and then execute `java -jar build/libs/translator-knowledge-beacon-4.0.6.jar`. Then, navigate to `http://localhost:8080/api` in your browser. 
+To run this server execute `gradle build` in the root directory, and then execute `java -jar build/libs/translator-knowledge-beacon-#.#.#.jar` (where '#' are the current release numbers built there).
+ Then, navigate to `http://localhost:8080/api` in your browser. 
 
 ## Code Generation
 
