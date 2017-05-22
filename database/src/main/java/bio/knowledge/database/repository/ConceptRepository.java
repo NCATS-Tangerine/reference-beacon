@@ -206,7 +206,7 @@ public interface ConceptRepository extends GraphRepository<Neo4jConcept> {
 	@Query( " MATCH (n:Concept) " +
 			" WHERE NOT n.semanticGroup IS NULL "+
 			" RETURN n.semanticGroup AS type, COUNT(n.semanticGroup) AS frequency")
-	public List<Map<String,Object>> apiCountBySemanticGroup();
+	public List<Map<String,Object>> countAllGroupBySemanticGroup();
 	
 	/**
 	 * Right now accountId and groupId are only being used to count the number

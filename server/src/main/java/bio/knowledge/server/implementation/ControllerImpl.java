@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
@@ -192,7 +191,7 @@ public class ControllerImpl {
 	public ResponseEntity<List<InlineResponse200>> linkedTypes() {
 		List<InlineResponse200> responses = new ArrayList<InlineResponse200>();
 		
-		List<Map<String, Object>> counts = conceptRepository.apiCountBySemanticGroup();
+		List<Map<String, Object>> counts = conceptRepository.countAllGroupBySemanticGroup();
 		
 		for (Map<String, Object> map : counts) {
 			InlineResponse200 response = new InlineResponse200();

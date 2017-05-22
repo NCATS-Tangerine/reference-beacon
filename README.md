@@ -1,10 +1,14 @@
 # Reference-Beacon
 
-### Setup
+### Eclipse Project
 
-Move or copy and paste `config/ogm.properties` to `server/src/main/resources/ogm.properties`. Then fill out the properties file.
+The project is a Gradle build. Managing the project within Eclipse generally requires the Gradle "BuildShip" tooling and importing the project from Git, then (re-)importing the same project as a Gradle project.
 
-To run this server execute `gradle build` in the root directory, and then execute `java -jar build/libs/translator-knowledge-beacon-4.0.6.jar`. Then, navigate to `http://localhost:8080/api` in your browser. You can change the port on which this server is run in the `server/src/main/resources/application.properties` file.
+### Run Configuration
+
+Move or copy and paste `config/application.properties` and `config/ogm.properties`to `server/src/main/resources/application.properties` and `server/src/main/resources/ogm.properties`, respectively. Then customize the database credentials in the properties files to your needs. You can change the port on which this server is run in the `server/src/main/resources/application.properties` file.
+
+To run this server execute `gradle build` in the root directory, and then execute `java -jar build/libs/translator-knowledge-beacon-4.0.6.jar`. Then, navigate to `http://localhost:8080/api` in your browser. 
 
 ## Code Generation
 
