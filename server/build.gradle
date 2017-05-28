@@ -1,5 +1,5 @@
-archivesBaseName  = 'knowledge-beacon-server'
-description       = 'NCATS Translator Knowledge Beacon API Server'
+archivesBaseName  = 'reference-beacon'
+description       = 'Reference Knowledge Beacon Using Knowledge.Bio 3.0 Database Access'
 
 evaluationDependsOn(':database')
 
@@ -41,8 +41,10 @@ dependencies {
 }
 
 jar {
+    from sourceSets.main.allSource
     manifest {
         attributes("Main-Class": "bio.knowledge.server.Swagger2SpringBoot")
+        attributes("provider": "STAR Informatics")
     }
 }
 

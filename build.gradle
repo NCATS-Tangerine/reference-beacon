@@ -131,10 +131,6 @@ allprojects {
 		}
 	}
 	
-    jar {
-        from sourceSets.main.allSource
-        manifest.attributes provider: 'STAR Informatics'
-    }
 }
 
 //evaluationDependsOn(':dataloader')
@@ -177,4 +173,10 @@ task wrapper(type: Wrapper) {
 
 springBoot {
     mainClass = "bio.knowledge.server.Swagger2SpringBoot"
+}
+
+jar {
+    manifest {
+        attributes("Main-Class": "bio.knowledge.server.Swagger2SpringBoot")
+    }
 }
