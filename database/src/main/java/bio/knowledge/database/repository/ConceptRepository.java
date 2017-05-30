@@ -142,14 +142,19 @@ public interface ConceptRepository extends GraphRepository<Neo4jConcept> {
 	
 	@Query(
 			" MATCH (concept:Concept) " +
+			" WITH " +
+			" 	SIZE(FILTER(x IN {filter} WHERE LOWER(concept.name) CONTAINS LOWER(x))) AS num_name_matches, " +
+			" 	SIZE(FILTER(x IN {filter} WHERE LOWER(concept.synonyms) CONTAINS LOWER(x))) AS num_syn_matches, " +
+			" 	concept AS concept " +
 			" WHERE ( " +
-			"     ANY (x IN {filter} WHERE LOWER(concept.name)     CONTAINS LOWER(x)) OR " +
-			"     ANY (x IN {filter} WHERE LOWER(concept.synonyms) CONTAINS LOWER(x)) " +
-			" ) AND (" +
-			"     {semanticGroups} IS NULL OR SIZE({semanticGroups}) = 0 OR " +
-			"     ANY (x IN {semanticGroups} WHERE LOWER(concept.semanticGroup) = LOWER(x)) " +
+			" 	num_name_matches > 0 OR num_syn_matches > 0 " +
+			" ) AND ( "+
+			" 	{semanticGroups} IS NULL OR SIZE({semanticGroups}) = 0 OR " +
+			" 	ANY (x IN {semanticGroups} WHERE LOWER(concept.semanticGroup) = LOWER(x)) " +
 			" ) " +
-			" RETURN concept " +
+			" RETURN " +
+			" 	concept " +
+			" ORDER BY num_name_matches + num_syn_matches DESC " +
 			" SKIP  ({pageNumber} - 1) * {pageSize} " +
 			" LIMIT {pageSize} "
 	)
