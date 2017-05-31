@@ -32,8 +32,8 @@ allprojects {
 	// May 2017 - operating baseline implementation of the Translator Knowledge.Bio
 	// including a Knowledge Beacon server wrapping KB 3.0 data
 	// reference beacon server refactored out; 
-	// release renumbered to reflect translator beacon API version
-	version = '1.0.12'  
+	// release renumbered to reflect variants of the translator beacon API version
+	version = '1.0.12.2'  
 	
     apply plugin: 'maven'
     apply plugin: 'java'
