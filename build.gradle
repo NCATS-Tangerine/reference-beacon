@@ -33,7 +33,7 @@ allprojects {
 	// including a Knowledge Beacon server wrapping KB 3.0 data
 	// reference beacon server refactored out; 
 	// release renumbered to reflect variants of the translator beacon API version
-	version = '1.0.12.2'  
+	version = '1.0.12.3'  // ignore concepts without statements
 	
     apply plugin: 'maven'
     apply plugin: 'java'
