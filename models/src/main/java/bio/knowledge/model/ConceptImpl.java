@@ -3,11 +3,8 @@ package bio.knowledge.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.neo4j.ogm.annotation.Relationship;
-
-import bio.knowledge.model.core.Feature;
-import bio.knowledge.model.core.IdentifiedEntity;
 import bio.knowledge.model.core.AbstractIdentifiedEntity;
+import bio.knowledge.model.core.Feature;
 
 public class ConceptImpl extends AbstractIdentifiedEntity implements Concept {
 
