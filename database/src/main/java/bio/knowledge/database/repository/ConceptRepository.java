@@ -145,9 +145,10 @@ public interface ConceptRepository extends GraphRepository<Neo4jConcept> {
 			" WITH " +
 			" 	SIZE(FILTER(x IN {filter} WHERE LOWER(concept.name) CONTAINS LOWER(x))) AS num_name_matches, " +
 			" 	SIZE(FILTER(x IN {filter} WHERE LOWER(concept.synonyms) CONTAINS LOWER(x))) AS num_syn_matches, " +
+			" 	SIZE(FILTER(x IN {filter} WHERE LOWER(concpet.description) CONTAISN LOWER(x) AS num_desc_matches, " +
 			" 	concept AS concept " +
 			" WHERE ( " +
-			" 	num_name_matches > 0 OR num_syn_matches > 0 " +
+			" 	num_name_matches > 0 OR num_syn_matches > 0 OR num_desc_matches > 0 " +
 			" ) AND ( "+
 			" 	{semanticGroups} IS NULL OR SIZE({semanticGroups}) = 0 OR " +
 			" 	ANY (x IN {semanticGroups} WHERE LOWER(concept.semanticGroup) = LOWER(x)) " +
