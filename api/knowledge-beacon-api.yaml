@@ -8,8 +8,9 @@ info:
     url: 'http://starinformatics.com'
     email: richard@starinformatics.com
   description: >
-    This is the Translator Knowledge Beacon Aggregator web service application
-    programming interface (API).
+    This is the Translator Knowledge Beacon web service application
+    programming interface (API) implemented on top of a 
+    Semantic Medline Database reference knowledge source.
   license:
     name: MIT License
     url: 'http://opensource.org/licenses/MIT'
