@@ -1,14 +1,15 @@
 package bio.knowledge.server.model;
 
 import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import javax.validation.constraints.*;
 /**
  * StatementsObject
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-05-15T14:54:43.522-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-11T11:29:02.272-07:00")
 
 public class StatementsObject   {
   @JsonProperty("id")
@@ -16,6 +17,9 @@ public class StatementsObject   {
 
   @JsonProperty("name")
   private String name = null;
+
+  @JsonProperty("semgroup")
+  private String semgroup = null;
 
   public StatementsObject id(String id) {
     this.id = id;
@@ -53,6 +57,24 @@ public class StatementsObject   {
     this.name = name;
   }
 
+  public StatementsObject semgroup(String semgroup) {
+    this.semgroup = semgroup;
+    return this;
+  }
+
+   /**
+   * a semantic group for the object concept (specified as a code CHEM, GENE, etc. - see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes) 
+   * @return semgroup
+  **/
+  @ApiModelProperty(value = "a semantic group for the object concept (specified as a code CHEM, GENE, etc. - see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes) ")
+  public String getSemgroup() {
+    return semgroup;
+  }
+
+  public void setSemgroup(String semgroup) {
+    this.semgroup = semgroup;
+  }
+
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -64,12 +86,13 @@ public class StatementsObject   {
     }
     StatementsObject statementsObject = (StatementsObject) o;
     return Objects.equals(this.id, statementsObject.id) &&
-        Objects.equals(this.name, statementsObject.name);
+        Objects.equals(this.name, statementsObject.name) &&
+        Objects.equals(this.semgroup, statementsObject.semgroup);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name);
+    return Objects.hash(id, name, semgroup);
   }
 
   @Override
@@ -79,6 +102,7 @@ public class StatementsObject   {
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
+    sb.append("    semgroup: ").append(toIndentedString(semgroup)).append("\n");
     sb.append("}");
     return sb.toString();
   }

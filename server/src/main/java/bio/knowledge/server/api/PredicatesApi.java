@@ -1,6 +1,6 @@
 package bio.knowledge.server.api;
 
-import bio.knowledge.server.model.InlineResponse200;
+import bio.knowledge.server.model.InlineResponse2003;
 
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
@@ -17,15 +17,15 @@ import java.util.List;
 import javax.validation.constraints.*;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-11T11:29:02.272-07:00")
 
-@Api(value = "types", description = "the types API")
-public interface TypesApi {
+@Api(value = "predicates", description = "the predicates API")
+public interface PredicatesApi {
 
-    @ApiOperation(value = "", notes = "Get a list of types and # of instances in the knowledge source, and a link to the API call for the list of equivalent terminology ", response = InlineResponse200.class, responseContainer = "List", tags={ "summary", })
+    @ApiOperation(value = "", notes = "Get a list of predicates used in statements issued by the knowledge source ", response = InlineResponse2003.class, responseContainer = "List", tags={ "predicates", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Successful response with types and frequency returned ", response = InlineResponse200.class) })
-    @RequestMapping(value = "/types",
+        @ApiResponse(code = 200, message = "Successful response with types and frequency returned ", response = InlineResponse2003.class) })
+    @RequestMapping(value = "/predicates",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<InlineResponse200>> linkedTypes();
+    ResponseEntity<List<InlineResponse2003>> getPredicates();
 
 }
