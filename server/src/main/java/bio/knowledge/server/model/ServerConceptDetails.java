@@ -1,24 +1,23 @@
 package bio.knowledge.server.model;
 
 import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
+
 import io.swagger.annotations.ApiModelProperty;
-import javax.validation.constraints.*;
 /**
  * ConceptsconceptIdDetails
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-11T11:29:02.272-07:00")
 
-public class ConceptsconceptIdDetails   {
+public class ServerConceptDetails   {
   @JsonProperty("tag")
   private String tag = null;
 
   @JsonProperty("value")
   private String value = null;
 
-  public ConceptsconceptIdDetails tag(String tag) {
+  public ServerConceptDetails tag(String tag) {
     this.tag = tag;
     return this;
   }
@@ -36,7 +35,7 @@ public class ConceptsconceptIdDetails   {
     this.tag = tag;
   }
 
-  public ConceptsconceptIdDetails value(String value) {
+  public ServerConceptDetails value(String value) {
     this.value = value;
     return this;
   }
@@ -63,7 +62,7 @@ public class ConceptsconceptIdDetails   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ConceptsconceptIdDetails conceptsconceptIdDetails = (ConceptsconceptIdDetails) o;
+    ServerConceptDetails conceptsconceptIdDetails = (ServerConceptDetails) o;
     return Objects.equals(this.tag, conceptsconceptIdDetails.tag) &&
         Objects.equals(this.value, conceptsconceptIdDetails.value);
   }

@@ -63,7 +63,7 @@ public interface PredicateRepository extends GraphRepository<Neo4jPredicate> {
 	 * @param name
 	 * @return
 	 */
-	@Query("MATCH (predicate:Predicate) WHERE predicate.name = {name} RETURN predicate")
+	@Query("MATCH (predicate:Predicate) WHERE predicate.name = {name} RETURN DISTINCT predicate")
 	Neo4jPredicate findPredicateByName(@Param("name")String name);
 	
 	@Query("MATCH (predicate:Predicate) RETURN predicate")

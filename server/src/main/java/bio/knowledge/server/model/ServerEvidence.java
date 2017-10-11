@@ -1,17 +1,16 @@
 package bio.knowledge.server.model;
 
 import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
+
 import io.swagger.annotations.ApiModelProperty;
-import javax.validation.constraints.*;
 /**
  * InlineResponse2005
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-11T11:29:02.272-07:00")
 
-public class InlineResponse2005   {
+public class ServerEvidence   {
   @JsonProperty("id")
   private String id = null;
 
@@ -24,7 +23,7 @@ public class InlineResponse2005   {
   @JsonProperty("date")
   private String date = null;
 
-  public InlineResponse2005 id(String id) {
+  public ServerEvidence id(String id) {
     this.id = id;
     return this;
   }
@@ -42,7 +41,7 @@ public class InlineResponse2005   {
     this.id = id;
   }
 
-  public InlineResponse2005 label(String label) {
+  public ServerEvidence label(String label) {
     this.label = label;
     return this;
   }
@@ -60,7 +59,7 @@ public class InlineResponse2005   {
     this.label = label;
   }
 
-  public InlineResponse2005 type(String type) {
+  public ServerEvidence type(String type) {
     this.type = type;
     return this;
   }
@@ -78,7 +77,7 @@ public class InlineResponse2005   {
     this.type = type;
   }
 
-  public InlineResponse2005 date(String date) {
+  public ServerEvidence date(String date) {
     this.date = date;
     return this;
   }
@@ -105,7 +104,7 @@ public class InlineResponse2005   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    InlineResponse2005 inlineResponse2005 = (InlineResponse2005) o;
+    ServerEvidence inlineResponse2005 = (ServerEvidence) o;
     return Objects.equals(this.id, inlineResponse2005.id) &&
         Objects.equals(this.label, inlineResponse2005.label) &&
         Objects.equals(this.type, inlineResponse2005.type) &&

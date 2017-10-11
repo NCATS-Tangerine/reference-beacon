@@ -11,30 +11,34 @@ import org.springframework.stereotype.Controller;
 
 import bio.knowledge.database.repository.ConceptRepository;
 import bio.knowledge.database.repository.EvidenceRepository;
+import bio.knowledge.database.repository.PredicateRepository;
 import bio.knowledge.database.repository.StatementRepository;
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.Predicate;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.neo4j.Neo4jConcept;
-import bio.knowledge.server.model.InlineResponse200;
-import bio.knowledge.server.model.InlineResponse2001;
-import bio.knowledge.server.model.InlineResponse2002;
-import bio.knowledge.server.model.InlineResponse2003;
-import bio.knowledge.server.model.InlineResponse2004;
-import bio.knowledge.server.model.StatementsObject;
-import bio.knowledge.server.model.StatementsPredicate;
-import bio.knowledge.server.model.StatementsSubject;
+import bio.knowledge.model.neo4j.Neo4jPredicate;
+import bio.knowledge.server.model.ServerConcept;
+import bio.knowledge.server.model.ServerConceptWithDetails;
+import bio.knowledge.server.model.ServerEvidence;
+import bio.knowledge.server.model.ServerPredicate;
+import bio.knowledge.server.model.ServerStatement;
+import bio.knowledge.server.model.ServerStatementsObject;
+import bio.knowledge.server.model.ServerStatementsPredicate;
+import bio.knowledge.server.model.ServerStatementsSubject;
+import bio.knowledge.server.model.ServerSummary;
 import bio.knowledge.server.utilities.Utilities;
 
 @Controller
 public class ControllerImpl {
 	
 	@Autowired ConceptRepository conceptRepository;
+	@Autowired PredicateRepository predicateRepository;
 	@Autowired StatementRepository statementRepository;
 	@Autowired EvidenceRepository evidenceRepository;
 	
-	public ResponseEntity<List<InlineResponse2002>> getConcepts(
+	public ResponseEntity<List<ServerConcept>> getConcepts(
 			String keywords,
 			String semgroups,
 			Integer pageNumber,
@@ -49,10 +53,10 @@ public class ControllerImpl {
 		String[] semanticGroups = Utilities.buildArray(semgroups);
 
 		List<Neo4jConcept> concepts = conceptRepository.apiGetConcepts(filter, semanticGroups, pageNumber, pageSize);
-		List<InlineResponse2002> responses = new ArrayList<InlineResponse2002>();
+		List<ServerConcept> responses = new ArrayList<ServerConcept>();
 		
 		for (Concept concept : concepts) {
-			InlineResponse2002 response = new InlineResponse2002();
+			ServerConcept response = new ServerConcept();
 			
 			response.setId(concept.getId());
 			response.setName(concept.getName());
@@ -65,15 +69,31 @@ public class ControllerImpl {
 
 		return ResponseEntity.ok(responses);
 	}
+
+	public ResponseEntity<List<ServerPredicate>> getPredicates() {
+		
+		List<Neo4jPredicate> data = predicateRepository.findAllPredicates();
+				
+		List<ServerPredicate> responses = new ArrayList<>();
+		for (Predicate predicate : data) {
+			
+			ServerPredicate response = new ServerPredicate();
+			response.setId(predicate.getId());
+			response.setName(predicate.getName());
+			
+			responses.add(response);
+		}
+		return ResponseEntity.ok(responses);
+	}
 	
-	public ResponseEntity<List<InlineResponse2001>> getConceptDetails(String conceptId) {
+	public ResponseEntity<List<ServerConceptWithDetails>> getConceptDetails(String conceptId) {
 		conceptId = Utilities.urlDecode(conceptId);
 		
-		List<InlineResponse2001> responses = new ArrayList<InlineResponse2001>();
+		List<ServerConceptWithDetails> responses = new ArrayList<ServerConceptWithDetails>();
 		Concept concept = conceptRepository.apiGetConceptById(conceptId);
 		
 		if (concept != null) {
-			InlineResponse2001 response = new InlineResponse2001();
+			ServerConceptWithDetails response = new ServerConceptWithDetails();
 			response.setDefinition(concept.getDescription());
 			response.setId(concept.getId());
 			response.setName(concept.getName());
@@ -87,7 +107,46 @@ public class ControllerImpl {
 		return ResponseEntity.ok(responses);
     }
 	
-	public ResponseEntity<List<InlineResponse2004>> getEvidence(String statementId,
+	private static final String EXACT_MATCH_RELATION = "wd:P2888"; // "exact match" predicate used for equivalent concept identification?
+	
+	private List<String> getExactMatches(List<String> c) {
+		
+		/*
+		 * RMB, October 11, 2017
+		 * I thought that perhaps the 'exact match' property would be semantically accurate
+		 *  for equivalent concepts in SemMedDb, however, direct manual querying on this
+		 *  relation in the database suggests otherwise: the property is very poorly curated
+		 *  curated with respect to the concept of "equivalent concepts"; so, I ignore this 
+		 *  relation for now; however, the code here would work great guide for predicate-constrained
+		 *  searching of statements, so I should keep it in mind.
+		 *  
+		String[] curies = c.toArray(new String[c.size()]);
+		List<Map<String, Object>> data = statementRepository.findConceptsMatchedByConceptsAndRelation(curies,EXACT_MATCH_RELATION);
+		List<String> responses = new ArrayList<String>();
+		for (Map<String, Object> entry : data) {
+			Concept concept = (Concept) entry.get("concept");
+			responses.add(concept.getId());
+		}
+		*/
+		
+		return new ArrayList<String>();
+	}
+	
+	public ResponseEntity<List<String>> getExactMatchesToConcept(String conceptId) {
+		List<String> c = new ArrayList<String>();
+		c.add(conceptId) ;
+		List<String> responses = getExactMatches(c);
+		// also return back the original conceptId
+		responses.add(conceptId); 
+		return ResponseEntity.ok(responses);
+	}
+
+	public ResponseEntity<List<String>> getExactMatchesToConceptList(List<String> c) {
+		List<String> responses = getExactMatches(c);
+		return ResponseEntity.ok(responses);
+	}
+	
+	public ResponseEntity<List<ServerEvidence>> getEvidence(String statementId,
 	        String keywords,
 	        Integer pageNumber,
 	        Integer pageSize
@@ -103,7 +162,7 @@ public class ControllerImpl {
 		
 		List<Map<String, Object>> data = evidenceRepository.apiGetEvidence(statementId, filter, pageNumber, pageSize);
 		
-		List<InlineResponse2004> responses = new ArrayList<InlineResponse2004>();
+		List<ServerEvidence> responses = new ArrayList<ServerEvidence>();
 		
 		for (Map<String, Object> entry : data) {
 			String year = String.valueOf((Integer) entry.get("year"));
@@ -111,7 +170,7 @@ public class ControllerImpl {
 			String day = String.valueOf((Integer) entry.get("day"));
 			Annotation annotation = (Annotation) entry.get("annotation");
 			
-			InlineResponse2004 response = new InlineResponse2004();
+			ServerEvidence response = new ServerEvidence();
 			response.setId(annotation.getId());
 			response.setLabel(annotation.getName());
 			response.setDate(year + "-" + month + "-" + day);
@@ -122,7 +181,7 @@ public class ControllerImpl {
 		return ResponseEntity.ok(responses);
 	}
 	
-	public ResponseEntity<List<InlineResponse2003>> getStatements(
+	public ResponseEntity<List<ServerStatement>> getStatements(
 			List<String> c,
 			Integer pageNumber,
 			Integer pageSize,
@@ -139,16 +198,16 @@ public class ControllerImpl {
 		String[] filter = Utilities.buildArray(keywords);
 		String[] semanticGroups = Utilities.buildArray(semgroups);
 
-		List<InlineResponse2003> responses = new ArrayList<InlineResponse2003>();
+		List<ServerStatement> responses = new ArrayList<ServerStatement>();
 
 		List<Map<String, Object>> data = statementRepository.apiFindById(curies, filter, semanticGroups, pageNumber, pageSize);
 
 		for (Map<String, Object> entry : data) {
-			InlineResponse2003 response = new InlineResponse2003();
+			ServerStatement response = new ServerStatement();
 
-			StatementsObject statementsObject = new StatementsObject();
-			StatementsSubject statementsSubject = new StatementsSubject();
-			StatementsPredicate statementsPredicate = new StatementsPredicate();
+			ServerStatementsObject statementsObject = new ServerStatementsObject();
+			ServerStatementsSubject statementsSubject = new ServerStatementsSubject();
+			ServerStatementsPredicate statementsPredicate = new ServerStatementsPredicate();
 
 			Statement statement = (Statement) entry.get("statement");
 			Concept object = (Concept) entry.get("object");
@@ -163,19 +222,21 @@ public class ControllerImpl {
 				response.setId(statementId);
 			}
 
-			if (object != null) {
-				statementsObject.setId(object.getId());
-				statementsObject.setName(object.getName());
-			}
-
 			if (subject != null) {
 				statementsSubject.setId(subject.getId());
 				statementsSubject.setName(subject.getName());
+				statementsSubject.setSemgroup(subject.getSemanticGroup().name());
 			}
 
 			if (relation != null) {
 				statementsPredicate.setId(relation.getId());
 				statementsPredicate.setName(relation.getName());
+			}
+
+			if (object != null) {
+				statementsObject.setId(object.getId());
+				statementsObject.setName(object.getName());
+				statementsObject.setSemgroup(object.getSemanticGroup().name());
 			}
 
 			response.setObject(statementsObject);
@@ -188,13 +249,13 @@ public class ControllerImpl {
 		return ResponseEntity.ok(responses);
 	}
 	
-	public ResponseEntity<List<InlineResponse200>> linkedTypes() {
-		List<InlineResponse200> responses = new ArrayList<InlineResponse200>();
+	public ResponseEntity<List<ServerSummary>> linkedTypes() {
+		List<ServerSummary> responses = new ArrayList<ServerSummary>();
 		
 		List<Map<String, Object>> counts = conceptRepository.countAllGroupBySemanticGroup();
 		
 		for (Map<String, Object> map : counts) {
-			InlineResponse200 response = new InlineResponse200();
+			ServerSummary response = new ServerSummary();
 			response.setId((String) map.get("type"));
 			response.setFrequency((Integer) map.get("frequency"));
 			

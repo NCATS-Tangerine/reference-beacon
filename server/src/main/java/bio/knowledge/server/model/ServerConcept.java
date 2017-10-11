@@ -1,19 +1,18 @@
 package bio.knowledge.server.model;
 
-import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.List;
-import javax.validation.constraints.*;
+import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.annotations.ApiModelProperty;
 /**
  * InlineResponse2002
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-11T11:29:02.272-07:00")
 
-public class InlineResponse2002   {
+public class ServerConcept   {
   @JsonProperty("id")
   private String id = null;
 
@@ -29,7 +28,7 @@ public class InlineResponse2002   {
   @JsonProperty("definition")
   private String definition = null;
 
-  public InlineResponse2002 id(String id) {
+  public ServerConcept id(String id) {
     this.id = id;
     return this;
   }
@@ -47,7 +46,7 @@ public class InlineResponse2002   {
     this.id = id;
   }
 
-  public InlineResponse2002 name(String name) {
+  public ServerConcept name(String name) {
     this.name = name;
     return this;
   }
@@ -65,7 +64,7 @@ public class InlineResponse2002   {
     this.name = name;
   }
 
-  public InlineResponse2002 semanticGroup(String semanticGroup) {
+  public ServerConcept semanticGroup(String semanticGroup) {
     this.semanticGroup = semanticGroup;
     return this;
   }
@@ -83,12 +82,12 @@ public class InlineResponse2002   {
     this.semanticGroup = semanticGroup;
   }
 
-  public InlineResponse2002 synonyms(List<String> synonyms) {
+  public ServerConcept synonyms(List<String> synonyms) {
     this.synonyms = synonyms;
     return this;
   }
 
-  public InlineResponse2002 addSynonymsItem(String synonymsItem) {
+  public ServerConcept addSynonymsItem(String synonymsItem) {
     this.synonyms.add(synonymsItem);
     return this;
   }
@@ -106,7 +105,7 @@ public class InlineResponse2002   {
     this.synonyms = synonyms;
   }
 
-  public InlineResponse2002 definition(String definition) {
+  public ServerConcept definition(String definition) {
     this.definition = definition;
     return this;
   }
@@ -133,7 +132,7 @@ public class InlineResponse2002   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    InlineResponse2002 inlineResponse2002 = (InlineResponse2002) o;
+    ServerConcept inlineResponse2002 = (ServerConcept) o;
     return Objects.equals(this.id, inlineResponse2002.id) &&
         Objects.equals(this.name, inlineResponse2002.name) &&
         Objects.equals(this.semanticGroup, inlineResponse2002.semanticGroup) &&

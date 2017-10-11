@@ -1,17 +1,16 @@
 package bio.knowledge.server.model;
 
 import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
+
 import io.swagger.annotations.ApiModelProperty;
-import javax.validation.constraints.*;
 /**
  * InlineResponse200
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-11T11:29:02.272-07:00")
 
-public class InlineResponse200   {
+public class ServerSummary   {
   @JsonProperty("id")
   private String id = null;
 
@@ -21,7 +20,7 @@ public class InlineResponse200   {
   @JsonProperty("frequency")
   private Integer frequency = null;
 
-  public InlineResponse200 id(String id) {
+  public ServerSummary id(String id) {
     this.id = id;
     return this;
   }
@@ -39,7 +38,7 @@ public class InlineResponse200   {
     this.id = id;
   }
 
-  public InlineResponse200 idmap(String idmap) {
+  public ServerSummary idmap(String idmap) {
     this.idmap = idmap;
     return this;
   }
@@ -57,7 +56,7 @@ public class InlineResponse200   {
     this.idmap = idmap;
   }
 
-  public InlineResponse200 frequency(Integer frequency) {
+  public ServerSummary frequency(Integer frequency) {
     this.frequency = frequency;
     return this;
   }
@@ -84,7 +83,7 @@ public class InlineResponse200   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    InlineResponse200 inlineResponse200 = (InlineResponse200) o;
+    ServerSummary inlineResponse200 = (ServerSummary) o;
     return Objects.equals(this.id, inlineResponse200.id) &&
         Objects.equals(this.idmap, inlineResponse200.idmap) &&
         Objects.equals(this.frequency, inlineResponse200.frequency);

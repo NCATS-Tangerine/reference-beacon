@@ -1,20 +1,18 @@
 package bio.knowledge.server.model;
 
-import java.util.Objects;
-import bio.knowledge.server.model.ConceptsconceptIdDetails;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.List;
-import javax.validation.constraints.*;
+import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.annotations.ApiModelProperty;
 /**
  * InlineResponse2001
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-11T11:29:02.272-07:00")
 
-public class InlineResponse2001   {
+public class ServerConceptWithDetails   {
   @JsonProperty("id")
   private String id = null;
 
@@ -31,9 +29,9 @@ public class InlineResponse2001   {
   private String definition = null;
 
   @JsonProperty("details")
-  private List<ConceptsconceptIdDetails> details = new ArrayList<ConceptsconceptIdDetails>();
+  private List<ServerConceptDetails> details = new ArrayList<ServerConceptDetails>();
 
-  public InlineResponse2001 id(String id) {
+  public ServerConceptWithDetails id(String id) {
     this.id = id;
     return this;
   }
@@ -51,7 +49,7 @@ public class InlineResponse2001   {
     this.id = id;
   }
 
-  public InlineResponse2001 name(String name) {
+  public ServerConceptWithDetails name(String name) {
     this.name = name;
     return this;
   }
@@ -69,7 +67,7 @@ public class InlineResponse2001   {
     this.name = name;
   }
 
-  public InlineResponse2001 semanticGroup(String semanticGroup) {
+  public ServerConceptWithDetails semanticGroup(String semanticGroup) {
     this.semanticGroup = semanticGroup;
     return this;
   }
@@ -87,12 +85,12 @@ public class InlineResponse2001   {
     this.semanticGroup = semanticGroup;
   }
 
-  public InlineResponse2001 synonyms(List<String> synonyms) {
+  public ServerConceptWithDetails synonyms(List<String> synonyms) {
     this.synonyms = synonyms;
     return this;
   }
 
-  public InlineResponse2001 addSynonymsItem(String synonymsItem) {
+  public ServerConceptWithDetails addSynonymsItem(String synonymsItem) {
     this.synonyms.add(synonymsItem);
     return this;
   }
@@ -110,7 +108,7 @@ public class InlineResponse2001   {
     this.synonyms = synonyms;
   }
 
-  public InlineResponse2001 definition(String definition) {
+  public ServerConceptWithDetails definition(String definition) {
     this.definition = definition;
     return this;
   }
@@ -128,12 +126,12 @@ public class InlineResponse2001   {
     this.definition = definition;
   }
 
-  public InlineResponse2001 details(List<ConceptsconceptIdDetails> details) {
+  public ServerConceptWithDetails details(List<ServerConceptDetails> details) {
     this.details = details;
     return this;
   }
 
-  public InlineResponse2001 addDetailsItem(ConceptsconceptIdDetails detailsItem) {
+  public ServerConceptWithDetails addDetailsItem(ServerConceptDetails detailsItem) {
     this.details.add(detailsItem);
     return this;
   }
@@ -143,11 +141,11 @@ public class InlineResponse2001   {
    * @return details
   **/
   @ApiModelProperty(value = "")
-  public List<ConceptsconceptIdDetails> getDetails() {
+  public List<ServerConceptDetails> getDetails() {
     return details;
   }
 
-  public void setDetails(List<ConceptsconceptIdDetails> details) {
+  public void setDetails(List<ServerConceptDetails> details) {
     this.details = details;
   }
 
@@ -160,7 +158,7 @@ public class InlineResponse2001   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    InlineResponse2001 inlineResponse2001 = (InlineResponse2001) o;
+    ServerConceptWithDetails inlineResponse2001 = (ServerConceptWithDetails) o;
     return Objects.equals(this.id, inlineResponse2001.id) &&
         Objects.equals(this.name, inlineResponse2001.name) &&
         Objects.equals(this.semanticGroup, inlineResponse2001.semanticGroup) &&

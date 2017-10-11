@@ -314,6 +314,25 @@ public interface StatementRepository extends GraphRepository<Neo4jGeneralStateme
 			@Param("relation") String relation
 	) ;
 	
+	
+	
+	@Query(" MATCH ( subject:Concept )<-[:SUBJECT]-( statement:Statement )"+
+		   " WHERE ANY(x in {curieIds} WHERE LOWER(subject.accessionId) = LOWER(x)) " +
+		   " WITH statement AS statement, subject AS subject "+
+		   " MATCH ( relation:Predicate { accessionId: {relationId}} )<-[:RELATION]-( statement:Statement )"+
+		   " RETURN DISTINCT subject AS concept"+
+		   " UNION"+
+		   " MATCH ( object:Concept )<-[:OBJECT]-( statement:Statement )"+
+		" WHERE ANY(x in {curieIds} WHERE LOWER(object.accessionId) = LOWER(x)) " +
+		   " WITH statement AS statement, object AS object "+
+		   " MATCH ( relation:Predicate { accessionId: {relationId}} )<-[:RELATION]-( statement:Statement )"+
+		   " RETURN DISTINCT object AS concept"
+	)
+	List<Map<String, Object>> findConceptsMatchedByConceptsAndRelation(
+			@Param("curieIds") String[] curieIds,
+			@Param("relationId") String relationId
+	);
+	
 	@Query(
 			" MATCH (concept:Concept)<-[:SUBJECT|:OBJECT]-(statement:Statement) " + 
 			" WHERE ANY(x in {curieIds} WHERE LOWER(concept.accessionId) = LOWER(x)) " +
@@ -347,4 +366,5 @@ public interface StatementRepository extends GraphRepository<Neo4jGeneralStateme
 			@Param("pageNumber") Integer pageNumber,
 			@Param("pageSize") Integer pageSize
 	);
+
 }

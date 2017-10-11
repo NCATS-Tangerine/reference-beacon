@@ -1,24 +1,23 @@
 package bio.knowledge.server.model;
 
 import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
+
 import io.swagger.annotations.ApiModelProperty;
-import javax.validation.constraints.*;
 /**
  * InlineResponse2003
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-11T11:29:02.272-07:00")
 
-public class InlineResponse2003   {
+public class ServerPredicate   {
   @JsonProperty("id")
   private String id = null;
 
   @JsonProperty("name")
   private String name = null;
 
-  public InlineResponse2003 id(String id) {
+  public ServerPredicate id(String id) {
     this.id = id;
     return this;
   }
@@ -36,7 +35,7 @@ public class InlineResponse2003   {
     this.id = id;
   }
 
-  public InlineResponse2003 name(String name) {
+  public ServerPredicate name(String name) {
     this.name = name;
     return this;
   }
@@ -63,7 +62,7 @@ public class InlineResponse2003   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    InlineResponse2003 inlineResponse2003 = (InlineResponse2003) o;
+    ServerPredicate inlineResponse2003 = (ServerPredicate) o;
     return Objects.equals(this.id, inlineResponse2003.id) &&
         Objects.equals(this.name, inlineResponse2003.name);
   }

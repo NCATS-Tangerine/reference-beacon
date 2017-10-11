@@ -1,33 +1,29 @@
 package bio.knowledge.server.model;
 
 import java.util.Objects;
-import bio.knowledge.server.model.StatementsObject;
-import bio.knowledge.server.model.StatementsPredicate;
-import bio.knowledge.server.model.StatementsSubject;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
+
 import io.swagger.annotations.ApiModelProperty;
-import javax.validation.constraints.*;
 /**
  * InlineResponse2004
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-11T11:29:02.272-07:00")
 
-public class InlineResponse2004   {
+public class ServerStatement   {
   @JsonProperty("id")
   private String id = null;
 
   @JsonProperty("subject")
-  private StatementsSubject subject = null;
+  private ServerStatementsSubject subject = null;
 
   @JsonProperty("predicate")
-  private StatementsPredicate predicate = null;
+  private ServerStatementsPredicate predicate = null;
 
   @JsonProperty("object")
-  private StatementsObject object = null;
+  private ServerStatementsObject object = null;
 
-  public InlineResponse2004 id(String id) {
+  public ServerStatement id(String id) {
     this.id = id;
     return this;
   }
@@ -45,7 +41,7 @@ public class InlineResponse2004   {
     this.id = id;
   }
 
-  public InlineResponse2004 subject(StatementsSubject subject) {
+  public ServerStatement subject(ServerStatementsSubject subject) {
     this.subject = subject;
     return this;
   }
@@ -55,15 +51,15 @@ public class InlineResponse2004   {
    * @return subject
   **/
   @ApiModelProperty(value = "")
-  public StatementsSubject getSubject() {
+  public ServerStatementsSubject getSubject() {
     return subject;
   }
 
-  public void setSubject(StatementsSubject subject) {
+  public void setSubject(ServerStatementsSubject subject) {
     this.subject = subject;
   }
 
-  public InlineResponse2004 predicate(StatementsPredicate predicate) {
+  public ServerStatement predicate(ServerStatementsPredicate predicate) {
     this.predicate = predicate;
     return this;
   }
@@ -73,15 +69,15 @@ public class InlineResponse2004   {
    * @return predicate
   **/
   @ApiModelProperty(value = "")
-  public StatementsPredicate getPredicate() {
+  public ServerStatementsPredicate getPredicate() {
     return predicate;
   }
 
-  public void setPredicate(StatementsPredicate predicate) {
+  public void setPredicate(ServerStatementsPredicate predicate) {
     this.predicate = predicate;
   }
 
-  public InlineResponse2004 object(StatementsObject object) {
+  public ServerStatement object(ServerStatementsObject object) {
     this.object = object;
     return this;
   }
@@ -91,11 +87,11 @@ public class InlineResponse2004   {
    * @return object
   **/
   @ApiModelProperty(value = "")
-  public StatementsObject getObject() {
+  public ServerStatementsObject getObject() {
     return object;
   }
 
-  public void setObject(StatementsObject object) {
+  public void setObject(ServerStatementsObject object) {
     this.object = object;
   }
 
@@ -108,7 +104,7 @@ public class InlineResponse2004   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    InlineResponse2004 inlineResponse2004 = (InlineResponse2004) o;
+    ServerStatement inlineResponse2004 = (ServerStatement) o;
     return Objects.equals(this.id, inlineResponse2004.id) &&
         Objects.equals(this.subject, inlineResponse2004.subject) &&
         Objects.equals(this.predicate, inlineResponse2004.predicate) &&

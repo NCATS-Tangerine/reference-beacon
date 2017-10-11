@@ -1,17 +1,16 @@
 package bio.knowledge.server.model;
 
 import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
+
 import io.swagger.annotations.ApiModelProperty;
-import javax.validation.constraints.*;
 /**
  * StatementsSubject
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-11T11:29:02.272-07:00")
 
-public class StatementsSubject   {
+public class ServerStatementsSubject   {
   @JsonProperty("id")
   private String id = null;
 
@@ -21,7 +20,7 @@ public class StatementsSubject   {
   @JsonProperty("semgroup")
   private String semgroup = null;
 
-  public StatementsSubject id(String id) {
+  public ServerStatementsSubject id(String id) {
     this.id = id;
     return this;
   }
@@ -39,7 +38,7 @@ public class StatementsSubject   {
     this.id = id;
   }
 
-  public StatementsSubject name(String name) {
+  public ServerStatementsSubject name(String name) {
     this.name = name;
     return this;
   }
@@ -57,7 +56,7 @@ public class StatementsSubject   {
     this.name = name;
   }
 
-  public StatementsSubject semgroup(String semgroup) {
+  public ServerStatementsSubject semgroup(String semgroup) {
     this.semgroup = semgroup;
     return this;
   }
@@ -84,7 +83,7 @@ public class StatementsSubject   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    StatementsSubject statementsSubject = (StatementsSubject) o;
+    ServerStatementsSubject statementsSubject = (ServerStatementsSubject) o;
     return Objects.equals(this.id, statementsSubject.id) &&
         Objects.equals(this.name, statementsSubject.name) &&
         Objects.equals(this.semgroup, statementsSubject.semgroup);

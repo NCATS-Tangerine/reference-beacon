@@ -1,24 +1,23 @@
 package bio.knowledge.server.model;
 
 import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
+
 import io.swagger.annotations.ApiModelProperty;
-import javax.validation.constraints.*;
 /**
  * StatementsPredicate
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-11T11:29:02.272-07:00")
 
-public class StatementsPredicate   {
+public class ServerStatementsPredicate   {
   @JsonProperty("id")
   private String id = null;
 
   @JsonProperty("name")
   private String name = null;
 
-  public StatementsPredicate id(String id) {
+  public ServerStatementsPredicate id(String id) {
     this.id = id;
     return this;
   }
@@ -36,7 +35,7 @@ public class StatementsPredicate   {
     this.id = id;
   }
 
-  public StatementsPredicate name(String name) {
+  public ServerStatementsPredicate name(String name) {
     this.name = name;
     return this;
   }
@@ -63,7 +62,7 @@ public class StatementsPredicate   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    StatementsPredicate statementsPredicate = (StatementsPredicate) o;
+    ServerStatementsPredicate statementsPredicate = (ServerStatementsPredicate) o;
     return Objects.equals(this.id, statementsPredicate.id) &&
         Objects.equals(this.name, statementsPredicate.name);
   }

@@ -192,38 +192,60 @@ public class AbstractIdentifiedEntity implements IdentifiedEntity {
 		this.synonyms = synonyms;
 	}
 
+	private Integer version = 0;
+	
+	/*
+	 * (non-Javadoc)
+	 * @see bio.knowledge.model.core.VersionedObject#getVersion()
+	 */
 	@Override
 	public Integer getVersion() {
-		// TODO Auto-generated method stub
-		return null;
+		return version;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see bio.knowledge.model.core.VersionedObject#setVersion(java.lang.Integer)
+	 */
 	@Override
 	public void setVersion(Integer version) {
-		// TODO Auto-generated method stub
-		
+		this.version = version;
 	}
 
+	private long versionDate = 0;
+	
+	/*
+	 * (non-Javadoc)
+	 * @see bio.knowledge.model.core.VersionedObject#getVersionDate()
+	 */
 	@Override
 	public long getVersionDate() {
-		// TODO Auto-generated method stub
-		return 0;
+		return versionDate;
 	}
 
-	@Override
-	public void setVersionDate(long versionDate) {
-		// TODO Auto-generated method stub
-		
+	/*
+	 * @Override(non-Javadoc)
+	 * @see bio.knowledge.model.core.VersionedObject#setVersionDate(long)
+	 */
+	public void setVersionDate(long date) {
+		this.versionDate = date;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see bio.knowledge.model.core.DatabaseEntity#getDbId()
+	 */
 	@Override
 	public Long getDbId() {
-		// TODO Auto-generated method stub
 		return dbid;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see bio.knowledge.model.core.DatabaseEntity#setDbId(java.lang.Long)
+	 */
 	@Override
 	public void setDbId(Long id) {
-		this.dbid = dbid;
+		this.dbid = id;
 	}
 }
