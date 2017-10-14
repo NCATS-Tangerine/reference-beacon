@@ -1,6 +1,8 @@
 # Reference-Beacon
 
-https://rkb.ncats.io/swagger-ui.html
+The reference beacon project is a Java language implementation of the [Translator Knowledge Beacon Application Programming Interface](https://github.com/NCATS-Tangerine/translator-knowledge-beacon) which wraps a Neo4j graph database which has been populated with statements built from concepts and relationshps extracted by text mining from PubMed titles and abstracts and released as the [NIH Semantic Medline Database (SemMedDb)](https://skr3.nlm.nih.gov/SemMedDB/).
+
+An instance of the reference beacon is currently running online at NCATS at **https://rkb.ncats.io/swagger-ui.html**.
 
 ### Eclipse Project
 
