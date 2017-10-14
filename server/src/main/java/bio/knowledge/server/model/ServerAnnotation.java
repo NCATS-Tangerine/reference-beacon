@@ -6,11 +6,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
 /**
- * InlineResponse2005
+ * Annotation
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-11T11:29:02.272-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-13T16:45:32.456-07:00")
 
-public class ServerEvidence   {
+public class ServerAnnotation   {
   @JsonProperty("id")
   private String id = null;
 
@@ -23,7 +23,7 @@ public class ServerEvidence   {
   @JsonProperty("date")
   private String date = null;
 
-  public ServerEvidence id(String id) {
+  public ServerAnnotation id(String id) {
     this.id = id;
     return this;
   }
@@ -41,7 +41,7 @@ public class ServerEvidence   {
     this.id = id;
   }
 
-  public ServerEvidence label(String label) {
+  public ServerAnnotation label(String label) {
     this.label = label;
     return this;
   }
@@ -59,7 +59,7 @@ public class ServerEvidence   {
     this.label = label;
   }
 
-  public ServerEvidence type(String type) {
+  public ServerAnnotation type(String type) {
     this.type = type;
     return this;
   }
@@ -77,7 +77,7 @@ public class ServerEvidence   {
     this.type = type;
   }
 
-  public ServerEvidence date(String date) {
+  public ServerAnnotation date(String date) {
     this.date = date;
     return this;
   }
@@ -104,11 +104,11 @@ public class ServerEvidence   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ServerEvidence inlineResponse2005 = (ServerEvidence) o;
-    return Objects.equals(this.id, inlineResponse2005.id) &&
-        Objects.equals(this.label, inlineResponse2005.label) &&
-        Objects.equals(this.type, inlineResponse2005.type) &&
-        Objects.equals(this.date, inlineResponse2005.date);
+    ServerAnnotation annotation = (ServerAnnotation) o;
+    return Objects.equals(this.id, annotation.id) &&
+        Objects.equals(this.label, annotation.label) &&
+        Objects.equals(this.type, annotation.type) &&
+        Objects.equals(this.date, annotation.date);
   }
 
   @Override
@@ -119,7 +119,7 @@ public class ServerEvidence   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class InlineResponse2005 {\n");
+    sb.append("class Annotation {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    label: ").append(toIndentedString(label)).append("\n");

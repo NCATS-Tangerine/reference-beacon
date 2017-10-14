@@ -8,9 +8,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
 /**
- * InlineResponse2001
+ * ConceptDetail
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-11T11:29:02.272-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-13T16:45:32.456-07:00")
 
 public class ServerConceptWithDetails   {
   @JsonProperty("id")
@@ -29,7 +29,7 @@ public class ServerConceptWithDetails   {
   private String definition = null;
 
   @JsonProperty("details")
-  private List<ServerConceptDetails> details = new ArrayList<ServerConceptDetails>();
+  private List<ServerConceptDetail> details = new ArrayList<ServerConceptDetail>();
 
   public ServerConceptWithDetails id(String id) {
     this.id = id;
@@ -126,12 +126,12 @@ public class ServerConceptWithDetails   {
     this.definition = definition;
   }
 
-  public ServerConceptWithDetails details(List<ServerConceptDetails> details) {
+  public ServerConceptWithDetails details(List<ServerConceptDetail> details) {
     this.details = details;
     return this;
   }
 
-  public ServerConceptWithDetails addDetailsItem(ServerConceptDetails detailsItem) {
+  public ServerConceptWithDetails addDetailsItem(ServerConceptDetail detailsItem) {
     this.details.add(detailsItem);
     return this;
   }
@@ -141,11 +141,11 @@ public class ServerConceptWithDetails   {
    * @return details
   **/
   @ApiModelProperty(value = "")
-  public List<ServerConceptDetails> getDetails() {
+  public List<ServerConceptDetail> getDetails() {
     return details;
   }
 
-  public void setDetails(List<ServerConceptDetails> details) {
+  public void setDetails(List<ServerConceptDetail> details) {
     this.details = details;
   }
 
@@ -158,13 +158,13 @@ public class ServerConceptWithDetails   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ServerConceptWithDetails inlineResponse2001 = (ServerConceptWithDetails) o;
-    return Objects.equals(this.id, inlineResponse2001.id) &&
-        Objects.equals(this.name, inlineResponse2001.name) &&
-        Objects.equals(this.semanticGroup, inlineResponse2001.semanticGroup) &&
-        Objects.equals(this.synonyms, inlineResponse2001.synonyms) &&
-        Objects.equals(this.definition, inlineResponse2001.definition) &&
-        Objects.equals(this.details, inlineResponse2001.details);
+    ServerConceptWithDetails conceptDetail = (ServerConceptWithDetails) o;
+    return Objects.equals(this.id, conceptDetail.id) &&
+        Objects.equals(this.name, conceptDetail.name) &&
+        Objects.equals(this.semanticGroup, conceptDetail.semanticGroup) &&
+        Objects.equals(this.synonyms, conceptDetail.synonyms) &&
+        Objects.equals(this.definition, conceptDetail.definition) &&
+        Objects.equals(this.details, conceptDetail.details);
   }
 
   @Override
@@ -175,7 +175,7 @@ public class ServerConceptWithDetails   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class InlineResponse2001 {\n");
+    sb.append("class ConceptDetail {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");

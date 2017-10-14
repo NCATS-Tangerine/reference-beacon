@@ -6,22 +6,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
 /**
- * InlineResponse2004
+ * Statement
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-11T11:29:02.272-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-13T16:45:32.456-07:00")
 
 public class ServerStatement   {
   @JsonProperty("id")
   private String id = null;
 
   @JsonProperty("subject")
-  private ServerStatementsSubject subject = null;
+  private ServerStatementSubject subject = null;
 
   @JsonProperty("predicate")
-  private ServerStatementsPredicate predicate = null;
+  private ServerStatementPredicate predicate = null;
 
   @JsonProperty("object")
-  private ServerStatementsObject object = null;
+  private ServerStatementObject object = null;
 
   public ServerStatement id(String id) {
     this.id = id;
@@ -41,7 +41,7 @@ public class ServerStatement   {
     this.id = id;
   }
 
-  public ServerStatement subject(ServerStatementsSubject subject) {
+  public ServerStatement subject(ServerStatementSubject subject) {
     this.subject = subject;
     return this;
   }
@@ -51,15 +51,15 @@ public class ServerStatement   {
    * @return subject
   **/
   @ApiModelProperty(value = "")
-  public ServerStatementsSubject getSubject() {
+  public ServerStatementSubject getSubject() {
     return subject;
   }
 
-  public void setSubject(ServerStatementsSubject subject) {
+  public void setSubject(ServerStatementSubject subject) {
     this.subject = subject;
   }
 
-  public ServerStatement predicate(ServerStatementsPredicate predicate) {
+  public ServerStatement predicate(ServerStatementPredicate predicate) {
     this.predicate = predicate;
     return this;
   }
@@ -69,15 +69,15 @@ public class ServerStatement   {
    * @return predicate
   **/
   @ApiModelProperty(value = "")
-  public ServerStatementsPredicate getPredicate() {
+  public ServerStatementPredicate getPredicate() {
     return predicate;
   }
 
-  public void setPredicate(ServerStatementsPredicate predicate) {
+  public void setPredicate(ServerStatementPredicate predicate) {
     this.predicate = predicate;
   }
 
-  public ServerStatement object(ServerStatementsObject object) {
+  public ServerStatement object(ServerStatementObject object) {
     this.object = object;
     return this;
   }
@@ -87,11 +87,11 @@ public class ServerStatement   {
    * @return object
   **/
   @ApiModelProperty(value = "")
-  public ServerStatementsObject getObject() {
+  public ServerStatementObject getObject() {
     return object;
   }
 
-  public void setObject(ServerStatementsObject object) {
+  public void setObject(ServerStatementObject object) {
     this.object = object;
   }
 
@@ -104,11 +104,11 @@ public class ServerStatement   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ServerStatement inlineResponse2004 = (ServerStatement) o;
-    return Objects.equals(this.id, inlineResponse2004.id) &&
-        Objects.equals(this.subject, inlineResponse2004.subject) &&
-        Objects.equals(this.predicate, inlineResponse2004.predicate) &&
-        Objects.equals(this.object, inlineResponse2004.object);
+    ServerStatement statement = (ServerStatement) o;
+    return Objects.equals(this.id, statement.id) &&
+        Objects.equals(this.subject, statement.subject) &&
+        Objects.equals(this.predicate, statement.predicate) &&
+        Objects.equals(this.object, statement.object);
   }
 
   @Override
@@ -119,7 +119,7 @@ public class ServerStatement   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class InlineResponse2004 {\n");
+    sb.append("class Statement {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    subject: ").append(toIndentedString(subject)).append("\n");

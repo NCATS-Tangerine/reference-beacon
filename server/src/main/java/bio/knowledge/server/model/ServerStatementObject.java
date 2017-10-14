@@ -6,11 +6,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
 /**
- * StatementsObject
+ * StatementObject
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-11T11:29:02.272-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-13T16:45:32.456-07:00")
 
-public class ServerStatementsObject   {
+public class ServerStatementObject   {
   @JsonProperty("id")
   private String id = null;
 
@@ -20,7 +20,7 @@ public class ServerStatementsObject   {
   @JsonProperty("semgroup")
   private String semgroup = null;
 
-  public ServerStatementsObject id(String id) {
+  public ServerStatementObject id(String id) {
     this.id = id;
     return this;
   }
@@ -38,7 +38,7 @@ public class ServerStatementsObject   {
     this.id = id;
   }
 
-  public ServerStatementsObject name(String name) {
+  public ServerStatementObject name(String name) {
     this.name = name;
     return this;
   }
@@ -56,7 +56,7 @@ public class ServerStatementsObject   {
     this.name = name;
   }
 
-  public ServerStatementsObject semgroup(String semgroup) {
+  public ServerStatementObject semgroup(String semgroup) {
     this.semgroup = semgroup;
     return this;
   }
@@ -83,10 +83,10 @@ public class ServerStatementsObject   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ServerStatementsObject statementsObject = (ServerStatementsObject) o;
-    return Objects.equals(this.id, statementsObject.id) &&
-        Objects.equals(this.name, statementsObject.name) &&
-        Objects.equals(this.semgroup, statementsObject.semgroup);
+    ServerStatementObject statementObject = (ServerStatementObject) o;
+    return Objects.equals(this.id, statementObject.id) &&
+        Objects.equals(this.name, statementObject.name) &&
+        Objects.equals(this.semgroup, statementObject.semgroup);
   }
 
   @Override
@@ -97,7 +97,7 @@ public class ServerStatementsObject   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class StatementsObject {\n");
+    sb.append("class StatementObject {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");

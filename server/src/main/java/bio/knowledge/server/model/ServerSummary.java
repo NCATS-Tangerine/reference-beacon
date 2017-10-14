@@ -6,9 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
 /**
- * InlineResponse200
+ * Summary
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-11T11:29:02.272-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-13T16:45:32.456-07:00")
 
 public class ServerSummary   {
   @JsonProperty("id")
@@ -83,10 +83,10 @@ public class ServerSummary   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ServerSummary inlineResponse200 = (ServerSummary) o;
-    return Objects.equals(this.id, inlineResponse200.id) &&
-        Objects.equals(this.idmap, inlineResponse200.idmap) &&
-        Objects.equals(this.frequency, inlineResponse200.frequency);
+    ServerSummary summary = (ServerSummary) o;
+    return Objects.equals(this.id, summary.id) &&
+        Objects.equals(this.idmap, summary.idmap) &&
+        Objects.equals(this.frequency, summary.frequency);
   }
 
   @Override
@@ -97,7 +97,7 @@ public class ServerSummary   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class InlineResponse200 {\n");
+    sb.append("class Summary {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    idmap: ").append(toIndentedString(idmap)).append("\n");

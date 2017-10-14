@@ -19,14 +19,14 @@ import bio.knowledge.model.Predicate;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.model.neo4j.Neo4jPredicate;
+import bio.knowledge.server.model.ServerAnnotation;
 import bio.knowledge.server.model.ServerConcept;
 import bio.knowledge.server.model.ServerConceptWithDetails;
-import bio.knowledge.server.model.ServerEvidence;
 import bio.knowledge.server.model.ServerPredicate;
 import bio.knowledge.server.model.ServerStatement;
-import bio.knowledge.server.model.ServerStatementsObject;
-import bio.knowledge.server.model.ServerStatementsPredicate;
-import bio.knowledge.server.model.ServerStatementsSubject;
+import bio.knowledge.server.model.ServerStatementObject;
+import bio.knowledge.server.model.ServerStatementPredicate;
+import bio.knowledge.server.model.ServerStatementSubject;
 import bio.knowledge.server.model.ServerSummary;
 import bio.knowledge.server.utilities.Utilities;
 
@@ -80,6 +80,7 @@ public class ControllerImpl {
 			ServerPredicate response = new ServerPredicate();
 			response.setId(predicate.getId());
 			response.setName(predicate.getName());
+			response.setDefinition(predicate.getDescription());
 			
 			responses.add(response);
 		}
@@ -107,7 +108,7 @@ public class ControllerImpl {
 		return ResponseEntity.ok(responses);
     }
 	
-	private static final String EXACT_MATCH_RELATION = "wd:P2888"; // "exact match" predicate used for equivalent concept identification?
+	//private static final String EXACT_MATCH_RELATION = "wd:P2888"; // "exact match" predicate used for equivalent concept identification?
 	
 	private List<String> getExactMatches(List<String> c) {
 		
@@ -146,7 +147,7 @@ public class ControllerImpl {
 		return ResponseEntity.ok(responses);
 	}
 	
-	public ResponseEntity<List<ServerEvidence>> getEvidence(String statementId,
+	public ResponseEntity<List<ServerAnnotation>> getEvidence(String statementId,
 	        String keywords,
 	        Integer pageNumber,
 	        Integer pageSize
@@ -162,7 +163,7 @@ public class ControllerImpl {
 		
 		List<Map<String, Object>> data = evidenceRepository.apiGetEvidence(statementId, filter, pageNumber, pageSize);
 		
-		List<ServerEvidence> responses = new ArrayList<ServerEvidence>();
+		List<ServerAnnotation> responses = new ArrayList<ServerAnnotation>();
 		
 		for (Map<String, Object> entry : data) {
 			String year = String.valueOf((Integer) entry.get("year"));
@@ -170,7 +171,7 @@ public class ControllerImpl {
 			String day = String.valueOf((Integer) entry.get("day"));
 			Annotation annotation = (Annotation) entry.get("annotation");
 			
-			ServerEvidence response = new ServerEvidence();
+			ServerAnnotation response = new ServerAnnotation();
 			response.setId(annotation.getId());
 			response.setLabel(annotation.getName());
 			response.setDate(year + "-" + month + "-" + day);
@@ -186,28 +187,31 @@ public class ControllerImpl {
 			Integer pageNumber,
 			Integer pageSize,
 			String keywords,
-			String semgroups
+			String semgroups, 
+			String relations
 	) {
 		pageNumber = Utilities.fixPageNumber(pageNumber);
 		pageSize = Utilities.fixPageSize(pageSize);
 		c = Utilities.urlDecode(c);
 		keywords = Utilities.urlDecode(keywords);
 		semgroups = Utilities.urlDecode(semgroups);
+		relations = Utilities.urlDecode(relations);
 
 		String[] curies = c.toArray(new String[c.size()]);
 		String[] filter = Utilities.buildArray(keywords);
 		String[] semanticGroups = Utilities.buildArray(semgroups);
+		String[] relationIds = Utilities.buildArray(relations);
 
 		List<ServerStatement> responses = new ArrayList<ServerStatement>();
 
-		List<Map<String, Object>> data = statementRepository.apiFindById(curies, filter, semanticGroups, pageNumber, pageSize);
+		List<Map<String, Object>> data = statementRepository.apiFindById(curies, filter, semanticGroups, relationIds, pageNumber, pageSize);
 
 		for (Map<String, Object> entry : data) {
 			ServerStatement response = new ServerStatement();
 
-			ServerStatementsObject statementsObject = new ServerStatementsObject();
-			ServerStatementsSubject statementsSubject = new ServerStatementsSubject();
-			ServerStatementsPredicate statementsPredicate = new ServerStatementsPredicate();
+			ServerStatementObject statementsObject = new ServerStatementObject();
+			ServerStatementPredicate statementsPredicate = new ServerStatementPredicate();
+			ServerStatementSubject statementsSubject = new ServerStatementSubject();
 
 			Statement statement = (Statement) entry.get("statement");
 			Concept object = (Concept) entry.get("object");

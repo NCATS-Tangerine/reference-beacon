@@ -6,30 +6,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
 /**
- * Predicate
+ * StatementSubject
  */
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-13T16:45:32.456-07:00")
 
-public class ServerPredicate   {
+public class ServerStatementSubject   {
   @JsonProperty("id")
   private String id = null;
 
   @JsonProperty("name")
   private String name = null;
 
-  @JsonProperty("definition")
-  private String definition = null;
+  @JsonProperty("semgroup")
+  private String semgroup = null;
 
-  public ServerPredicate id(String id) {
+  public ServerStatementSubject id(String id) {
     this.id = id;
     return this;
   }
 
    /**
-   * CURIE-encoded identifier of predicate resource 
+   * CURIE-encoded identifier of concept 
    * @return id
   **/
-  @ApiModelProperty(value = "CURIE-encoded identifier of predicate resource ")
+  @ApiModelProperty(value = "CURIE-encoded identifier of concept ")
   public String getId() {
     return id;
   }
@@ -38,16 +38,16 @@ public class ServerPredicate   {
     this.id = id;
   }
 
-  public ServerPredicate name(String name) {
+  public ServerStatementSubject name(String name) {
     this.name = name;
     return this;
   }
 
    /**
-   * human readable name of predicate relation 
+   * human readable label of subject concept
    * @return name
   **/
-  @ApiModelProperty(value = "human readable name of predicate relation ")
+  @ApiModelProperty(value = "human readable label of subject concept")
   public String getName() {
     return name;
   }
@@ -56,22 +56,22 @@ public class ServerPredicate   {
     this.name = name;
   }
 
-  public ServerPredicate definition(String definition) {
-    this.definition = definition;
+  public ServerStatementSubject semgroup(String semgroup) {
+    this.semgroup = semgroup;
     return this;
   }
 
    /**
-   * human readable definition of predicate relation provided by this beacon 
-   * @return definition
+   * a semantic group for the subject concept (specified as a code CHEM, GENE, etc. - see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes) 
+   * @return semgroup
   **/
-  @ApiModelProperty(value = "human readable definition of predicate relation provided by this beacon ")
-  public String getDefinition() {
-    return definition;
+  @ApiModelProperty(value = "a semantic group for the subject concept (specified as a code CHEM, GENE, etc. - see [SemGroups](https://metamap.nlm.nih.gov/Docs/SemGroups_2013.txt) for the full list of codes) ")
+  public String getSemgroup() {
+    return semgroup;
   }
 
-  public void setDefinition(String definition) {
-    this.definition = definition;
+  public void setSemgroup(String semgroup) {
+    this.semgroup = semgroup;
   }
 
 
@@ -83,25 +83,25 @@ public class ServerPredicate   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ServerPredicate predicate = (ServerPredicate) o;
-    return Objects.equals(this.id, predicate.id) &&
-        Objects.equals(this.name, predicate.name) &&
-        Objects.equals(this.definition, predicate.definition);
+    ServerStatementSubject statementSubject = (ServerStatementSubject) o;
+    return Objects.equals(this.id, statementSubject.id) &&
+        Objects.equals(this.name, statementSubject.name) &&
+        Objects.equals(this.semgroup, statementSubject.semgroup);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, definition);
+    return Objects.hash(id, name, semgroup);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Predicate {\n");
+    sb.append("class StatementSubject {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
-    sb.append("    definition: ").append(toIndentedString(definition)).append("\n");
+    sb.append("    semgroup: ").append(toIndentedString(semgroup)).append("\n");
     sb.append("}");
     return sb.toString();
   }

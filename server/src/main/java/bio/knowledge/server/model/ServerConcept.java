@@ -8,9 +8,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
 /**
- * InlineResponse2002
+ * Concept
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-11T11:29:02.272-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-13T16:45:32.456-07:00")
 
 public class ServerConcept   {
   @JsonProperty("id")
@@ -132,12 +132,12 @@ public class ServerConcept   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ServerConcept inlineResponse2002 = (ServerConcept) o;
-    return Objects.equals(this.id, inlineResponse2002.id) &&
-        Objects.equals(this.name, inlineResponse2002.name) &&
-        Objects.equals(this.semanticGroup, inlineResponse2002.semanticGroup) &&
-        Objects.equals(this.synonyms, inlineResponse2002.synonyms) &&
-        Objects.equals(this.definition, inlineResponse2002.definition);
+    ServerConcept concept = (ServerConcept) o;
+    return Objects.equals(this.id, concept.id) &&
+        Objects.equals(this.name, concept.name) &&
+        Objects.equals(this.semanticGroup, concept.semanticGroup) &&
+        Objects.equals(this.synonyms, concept.synonyms) &&
+        Objects.equals(this.definition, concept.definition);
   }
 
   @Override
@@ -148,7 +148,7 @@ public class ServerConcept   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class InlineResponse2002 {\n");
+    sb.append("class Concept {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");

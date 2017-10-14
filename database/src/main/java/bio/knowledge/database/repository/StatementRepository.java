@@ -316,17 +316,11 @@ public interface StatementRepository extends GraphRepository<Neo4jGeneralStateme
 	
 	
 	
-	@Query(" MATCH ( subject:Concept )<-[:SUBJECT]-( statement:Statement )"+
+	@Query(" MATCH (concept:Concept)<-[:SUBJECT|:OBJECT]-(statement:Statement)"+
 		   " WHERE ANY(x in {curieIds} WHERE LOWER(subject.accessionId) = LOWER(x)) " +
-		   " WITH statement AS statement, subject AS subject "+
+		   " WITH statement AS statement, concept AS subject "+
 		   " MATCH ( relation:Predicate { accessionId: {relationId}} )<-[:RELATION]-( statement:Statement )"+
-		   " RETURN DISTINCT subject AS concept"+
-		   " UNION"+
-		   " MATCH ( object:Concept )<-[:OBJECT]-( statement:Statement )"+
-		" WHERE ANY(x in {curieIds} WHERE LOWER(object.accessionId) = LOWER(x)) " +
-		   " WITH statement AS statement, object AS object "+
-		   " MATCH ( relation:Predicate { accessionId: {relationId}} )<-[:RELATION]-( statement:Statement )"+
-		   " RETURN DISTINCT object AS concept"
+		   " RETURN DISTINCT concept"
 	)
 	List<Map<String, Object>> findConceptsMatchedByConceptsAndRelation(
 			@Param("curieIds") String[] curieIds,
@@ -348,12 +342,20 @@ public interface StatementRepository extends GraphRepository<Neo4jGeneralStateme
 			" WITH statement, subject, object " +
 			
 			" MATCH (relation:Predicate)<-[:RELATION]-(statement)-[:EVIDENCE]->(evidence:Evidence) " +
+			" WHERE {relationIds} IS NULL OR SIZE({relationIds}) = 0 " +
+			" OR ANY (x IN {relationIds} WHERE ( " +
+			"    LOWER(relation.accessionId) = LOWER(x) " +
+			" )) " +
+			
+			" WITH statement as statement, subject as subject, relation as relation, object as object, evidence as evidence" +
+			
 			" WHERE {filter} IS NULL OR SIZE({filter}) = 0 " +
 			" OR ANY (x IN {filter} WHERE ( " +
 			"    LOWER(object.name)   CONTAINS LOWER(x) OR " +
 			"    LOWER(subject.name)  CONTAINS LOWER(x) OR " +
 			"    LOWER(relation.name) CONTAINS LOWER(x) " +
 			" )) " +
+
 			" RETURN DISTINCT statement as statement, subject as subject, relation as relation, object as object, evidence as evidence" +
 			" ORDER BY evidence.count DESC " +
 			" SKIP ({pageNumber} - 1) * {pageSize} " +
@@ -363,6 +365,7 @@ public interface StatementRepository extends GraphRepository<Neo4jGeneralStateme
 			@Param("curieIds") String[] curieIds,
 			@Param("filter") String[] filter,
 			@Param("semanticGroups") String[] semanticGroups,
+			@Param("relationIds") String[] relationIds,
 			@Param("pageNumber") Integer pageNumber,
 			@Param("pageSize") Integer pageSize
 	);
