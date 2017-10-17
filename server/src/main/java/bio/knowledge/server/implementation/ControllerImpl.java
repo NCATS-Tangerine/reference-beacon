@@ -40,19 +40,19 @@ public class ControllerImpl {
 	
 	public ResponseEntity<List<ServerConcept>> getConcepts(
 			String keywords,
-			String semgroups,
+			String semanticGroups,
 			Integer pageNumber,
 			Integer pageSize
 	) {
 		pageNumber = Utilities.fixPageNumber(pageNumber);
 		pageSize = Utilities.fixPageSize(pageSize);
 		keywords = Utilities.urlDecode(keywords);
-		semgroups = Utilities.urlDecode(semgroups);
+		semanticGroups = Utilities.urlDecode(semanticGroups);
 
 		String[] filter = Utilities.buildArray(keywords);
-		String[] semanticGroups = Utilities.buildArray(semgroups);
+		String[] semanticGroupFilter = Utilities.buildArray(semanticGroups);
 
-		List<Neo4jConcept> concepts = conceptRepository.apiGetConcepts(filter, semanticGroups, pageNumber, pageSize);
+		List<Neo4jConcept> concepts = conceptRepository.apiGetConcepts(filter, semanticGroupFilter, pageNumber, pageSize);
 		List<ServerConcept> responses = new ArrayList<ServerConcept>();
 		
 		for (Concept concept : concepts) {
@@ -187,24 +187,24 @@ public class ControllerImpl {
 			Integer pageNumber,
 			Integer pageSize,
 			String keywords,
-			String semgroups, 
+			String semanticGroups, 
 			String relations
 	) {
 		pageNumber = Utilities.fixPageNumber(pageNumber);
 		pageSize = Utilities.fixPageSize(pageSize);
 		c = Utilities.urlDecode(c);
 		keywords = Utilities.urlDecode(keywords);
-		semgroups = Utilities.urlDecode(semgroups);
+		semanticGroups = Utilities.urlDecode(semanticGroups);
 		relations = Utilities.urlDecode(relations);
 
 		String[] curies = c.toArray(new String[c.size()]);
 		String[] filter = Utilities.buildArray(keywords);
-		String[] semanticGroups = Utilities.buildArray(semgroups);
-		String[] relationIds = Utilities.buildArray(relations);
+		String[] semanticFilter = Utilities.buildArray(semanticGroups);
+		String[] predicateFilter = Utilities.buildArray(relations);
 
 		List<ServerStatement> responses = new ArrayList<ServerStatement>();
 
-		List<Map<String, Object>> data = statementRepository.apiFindById(curies, filter, semanticGroups, relationIds, pageNumber, pageSize);
+		List<Map<String, Object>> data = statementRepository.apiFindById(curies, filter, semanticFilter, predicateFilter, pageNumber, pageSize);
 
 		for (Map<String, Object> entry : data) {
 			ServerStatement response = new ServerStatement();
@@ -229,7 +229,7 @@ public class ControllerImpl {
 			if (subject != null) {
 				statementsSubject.setId(subject.getId());
 				statementsSubject.setName(subject.getName());
-				statementsSubject.setSemgroup(subject.getSemanticGroup().name());
+				statementsSubject.setSemanticGroup(subject.getSemanticGroup().name());
 			}
 
 			if (relation != null) {
@@ -240,7 +240,7 @@ public class ControllerImpl {
 			if (object != null) {
 				statementsObject.setId(object.getId());
 				statementsObject.setName(object.getName());
-				statementsObject.setSemgroup(object.getSemanticGroup().name());
+				statementsObject.setSemanticGroup(object.getSemanticGroup().name());
 			}
 
 			response.setObject(statementsObject);

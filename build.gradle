@@ -30,7 +30,7 @@ allprojects {
 	// Version 4.0 now uses the new Translator Knowledge Beacon API
 	
 	// This release implements the Translator Knowledge Beacon version 1.0.14 API with enhanced
-	// management of semgroups and predicates in statement queries (plus the new /predicates endpoint)
+	// management of semantic groups and predicates in statement queries (plus the new /predicates endpoint)
 	version = '1.0.14'  
 	
     apply plugin: 'maven'
