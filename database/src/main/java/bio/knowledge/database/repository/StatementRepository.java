@@ -329,16 +329,37 @@ public interface StatementRepository extends GraphRepository<Neo4jGeneralStateme
 	
 	@Query(
 			" MATCH (concept:Concept)<-[:SUBJECT|:OBJECT]-(statement:Statement) " + 
-			" WHERE ANY(x in {curieIds} WHERE LOWER(concept.accessionId) = LOWER(x)) " +
+			" WHERE ANY(x in {concepts} WHERE LOWER(concept.accessionId) = LOWER(x)) " +
 			" WITH statement as statement, ID(concept) as id " +
 			
 			" MATCH (subject:Concept)<-[:SUBJECT]-(statement)-[:OBJECT]->(object:Concept) " +
-			" WHERE (ID(subject) = id OR ID(object) = id) AND " +
-			"    {semanticGroups} IS NULL OR SIZE({semanticGroups}) = 0 OR " +
-			"    ANY (x IN {semanticGroups} WHERE ( " +
-			"       LOWER(object.semanticGroup)  CONTAINS LOWER(x) OR " +
-			"       LOWER(subject.semanticGroup) CONTAINS LOWER(x) " +
-			"    )) " +
+			" WHERE " +
+		    " ( ID(subject) = id AND " +
+		     " ( {others} IS NULL OR SIZE({others}) = 0 OR " +
+		        " ANY ( x IN {others} WHERE " +
+		            " LOWER(object.accessionId) = LOWER(x) " +
+		        ")" +
+		     " ) AND " +
+		     " ( {semanticGroups} IS NULL OR SIZE({semanticGroups}) = 0 OR " +
+		        " ANY (x IN {semanticGroups} WHERE " +
+		            " LOWER(object.semanticGroup) CONTAINS LOWER(x) " +
+		        ")" +
+		     " ) " +
+			") "+
+			" OR "+
+		    " ( ID(object) = id AND " +
+		     " ( {others} IS NULL OR SIZE({others}) = 0 OR " +
+		        " ANY ( x IN {others} WHERE " +
+		            " LOWER(subject.accessionId) = LOWER(x) " +
+		        ")" +
+		     " ) AND " +
+		     " ( {semanticGroups} IS NULL OR SIZE({semanticGroups}) = 0 OR " +
+		        " ANY (x IN {semanticGroups} WHERE " +
+		            " LOWER(subject.semanticGroup) CONTAINS LOWER(x) " +
+		        ")" +
+		     " ) " +
+			") "+
+
 			" WITH statement, subject, object " +
 			
 			" MATCH (relation:Predicate)<-[:RELATION]-(statement)-[:EVIDENCE]->(evidence:Evidence) " +
@@ -361,11 +382,12 @@ public interface StatementRepository extends GraphRepository<Neo4jGeneralStateme
 			" SKIP ({pageNumber} - 1) * {pageSize} " +
 			" LIMIT {pageSize} "
 	)
-	List<Map<String, Object>> apiFindById(
-			@Param("curieIds") String[] curieIds,
+	List<Map<String, Object>> findStatements(
+			@Param("concepts") String[] concepts,
+			@Param("relationIds") String[] relationIds,
+			@Param("others") String[] others,
 			@Param("filter") String[] filter,
 			@Param("semanticGroups") String[] semanticGroups,
-			@Param("relationIds") String[] relationIds,
 			@Param("pageNumber") Integer pageNumber,
 			@Param("pageSize") Integer pageSize
 	);

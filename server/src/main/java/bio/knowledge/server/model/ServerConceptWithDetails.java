@@ -8,9 +8,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
 /**
- * ConceptDetail
+ * ConceptWithDetails
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-13T16:45:32.456-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-11-02T20:37:45.588-07:00")
 
 public class ServerConceptWithDetails   {
   @JsonProperty("id")
@@ -158,13 +158,13 @@ public class ServerConceptWithDetails   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ServerConceptWithDetails conceptDetail = (ServerConceptWithDetails) o;
-    return Objects.equals(this.id, conceptDetail.id) &&
-        Objects.equals(this.name, conceptDetail.name) &&
-        Objects.equals(this.semanticGroup, conceptDetail.semanticGroup) &&
-        Objects.equals(this.synonyms, conceptDetail.synonyms) &&
-        Objects.equals(this.definition, conceptDetail.definition) &&
-        Objects.equals(this.details, conceptDetail.details);
+    ServerConceptWithDetails conceptWithDetails = (ServerConceptWithDetails) o;
+    return Objects.equals(this.id, conceptWithDetails.id) &&
+        Objects.equals(this.name, conceptWithDetails.name) &&
+        Objects.equals(this.semanticGroup, conceptWithDetails.semanticGroup) &&
+        Objects.equals(this.synonyms, conceptWithDetails.synonyms) &&
+        Objects.equals(this.definition, conceptWithDetails.definition) &&
+        Objects.equals(this.details, conceptWithDetails.details);
   }
 
   @Override
@@ -175,7 +175,7 @@ public class ServerConceptWithDetails   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ConceptDetail {\n");
+    sb.append("class ConceptWithDetails {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");

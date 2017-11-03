@@ -184,27 +184,35 @@ public class ControllerImpl {
 	
 	public ResponseEntity<List<ServerStatement>> getStatements(
 			List<String> c,
-			Integer pageNumber,
-			Integer pageSize,
+			String relations,
+			List<String> o,
 			String keywords,
 			String semanticGroups, 
-			String relations
+			Integer pageNumber,
+			Integer pageSize
 	) {
-		pageNumber = Utilities.fixPageNumber(pageNumber);
-		pageSize = Utilities.fixPageSize(pageSize);
 		c = Utilities.urlDecode(c);
+		relations = Utilities.urlDecode(relations);
+		o = Utilities.urlDecode(o);
+		
 		keywords = Utilities.urlDecode(keywords);
 		semanticGroups = Utilities.urlDecode(semanticGroups);
-		relations = Utilities.urlDecode(relations);
+		pageNumber = Utilities.fixPageNumber(pageNumber);
+		pageSize = Utilities.fixPageSize(pageSize);
 
-		String[] curies = c.toArray(new String[c.size()]);
+		String[] concepts = c.toArray(new String[c.size()]);
+		
+		String[] others = null;
+		if( o != null)
+			others = o.toArray(new String[o.size()]);
+		
 		String[] filter = Utilities.buildArray(keywords);
 		String[] semanticFilter = Utilities.buildArray(semanticGroups);
 		String[] predicateFilter = Utilities.buildArray(relations);
 
 		List<ServerStatement> responses = new ArrayList<ServerStatement>();
 
-		List<Map<String, Object>> data = statementRepository.apiFindById(curies, filter, semanticFilter, predicateFilter, pageNumber, pageSize);
+		List<Map<String, Object>> data = statementRepository.findStatements(concepts, predicateFilter, others, filter, semanticFilter, pageNumber, pageSize);
 
 		for (Map<String, Object> entry : data) {
 			ServerStatement response = new ServerStatement();

@@ -6,9 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
 /**
- * ConceptsconceptIdDetails
+ * ConceptDetail
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-10-13T16:45:32.456-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-11-02T20:37:45.588-07:00")
 
 public class ServerConceptDetail   {
   @JsonProperty("tag")
@@ -62,9 +62,9 @@ public class ServerConceptDetail   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ServerConceptDetail conceptsconceptIdDetails = (ServerConceptDetail) o;
-    return Objects.equals(this.tag, conceptsconceptIdDetails.tag) &&
-        Objects.equals(this.value, conceptsconceptIdDetails.value);
+    ServerConceptDetail conceptDetail = (ServerConceptDetail) o;
+    return Objects.equals(this.tag, conceptDetail.tag) &&
+        Objects.equals(this.value, conceptDetail.value);
   }
 
   @Override
@@ -75,7 +75,7 @@ public class ServerConceptDetail   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ConceptsconceptIdDetails {\n");
+    sb.append("class ConceptDetail {\n");
     
     sb.append("    tag: ").append(toIndentedString(tag)).append("\n");
     sb.append("    value: ").append(toIndentedString(value)).append("\n");
