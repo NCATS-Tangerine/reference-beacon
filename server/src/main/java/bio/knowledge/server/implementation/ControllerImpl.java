@@ -183,28 +183,28 @@ public class ControllerImpl {
 	}
 	
 	public ResponseEntity<List<ServerStatement>> getStatements(
-			List<String> c,
+			List<String> source,
 			String relations,
-			List<String> o,
+			List<String> target,
 			String keywords,
 			String semanticGroups, 
 			Integer pageNumber,
 			Integer pageSize
 	) {
-		c = Utilities.urlDecode(c);
+		source = Utilities.urlDecode(source);
 		relations = Utilities.urlDecode(relations);
-		o = Utilities.urlDecode(o);
+		target = Utilities.urlDecode(target);
 		
 		keywords = Utilities.urlDecode(keywords);
 		semanticGroups = Utilities.urlDecode(semanticGroups);
 		pageNumber = Utilities.fixPageNumber(pageNumber);
 		pageSize = Utilities.fixPageSize(pageSize);
 
-		String[] concepts = c.toArray(new String[c.size()]);
+		String[] sourceCuries = source.toArray(new String[source.size()]);
 		
-		String[] others = null;
-		if( o != null)
-			others = o.toArray(new String[o.size()]);
+		String[] targetCuries = null;
+		if( target != null)
+			targetCuries = target.toArray(new String[target.size()]);
 		
 		String[] filter = Utilities.buildArray(keywords);
 		String[] semanticFilter = Utilities.buildArray(semanticGroups);
@@ -212,7 +212,7 @@ public class ControllerImpl {
 
 		List<ServerStatement> responses = new ArrayList<ServerStatement>();
 
-		List<Map<String, Object>> data = statementRepository.findStatements(concepts, predicateFilter, others, filter, semanticFilter, pageNumber, pageSize);
+		List<Map<String, Object>> data = statementRepository.findStatements(sourceCuries, predicateFilter, targetCuries, filter, semanticFilter, pageNumber, pageSize);
 
 		for (Map<String, Object> entry : data) {
 			ServerStatement response = new ServerStatement();

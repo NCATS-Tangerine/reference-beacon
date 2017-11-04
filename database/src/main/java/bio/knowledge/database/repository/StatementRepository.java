@@ -329,14 +329,14 @@ public interface StatementRepository extends GraphRepository<Neo4jGeneralStateme
 	
 	@Query(
 			" MATCH (concept:Concept)<-[:SUBJECT|:OBJECT]-(statement:Statement) " + 
-			" WHERE ANY(x in {concepts} WHERE LOWER(concept.accessionId) = LOWER(x)) " +
+			" WHERE ANY(x in {sources} WHERE LOWER(concept.accessionId) = LOWER(x)) " +
 			" WITH statement as statement, ID(concept) as id " +
 			
 			" MATCH (subject:Concept)<-[:SUBJECT]-(statement)-[:OBJECT]->(object:Concept) " +
 			" WHERE " +
 		    " ( ID(subject) = id AND " +
-		     " ( {others} IS NULL OR SIZE({others}) = 0 OR " +
-		        " ANY ( x IN {others} WHERE " +
+		     " ( {targets} IS NULL OR SIZE({targets}) = 0 OR " +
+		        " ANY ( x IN {targets} WHERE " +
 		            " LOWER(object.accessionId) = LOWER(x) " +
 		        ")" +
 		     " ) AND " +
@@ -348,8 +348,8 @@ public interface StatementRepository extends GraphRepository<Neo4jGeneralStateme
 			") "+
 			" OR "+
 		    " ( ID(object) = id AND " +
-		     " ( {others} IS NULL OR SIZE({others}) = 0 OR " +
-		        " ANY ( x IN {others} WHERE " +
+		     " ( {targets} IS NULL OR SIZE({targets}) = 0 OR " +
+		        " ANY ( x IN {targets} WHERE " +
 		            " LOWER(subject.accessionId) = LOWER(x) " +
 		        ")" +
 		     " ) AND " +
@@ -383,9 +383,9 @@ public interface StatementRepository extends GraphRepository<Neo4jGeneralStateme
 			" LIMIT {pageSize} "
 	)
 	List<Map<String, Object>> findStatements(
-			@Param("concepts") String[] concepts,
+			@Param("sources") String[] sources,
 			@Param("relationIds") String[] relationIds,
-			@Param("others") String[] others,
+			@Param("targets") String[] targets,
 			@Param("filter") String[] filter,
 			@Param("semanticGroups") String[] semanticGroups,
 			@Param("pageNumber") Integer pageNumber,
