@@ -391,5 +391,19 @@ public interface StatementRepository extends GraphRepository<Neo4jGeneralStateme
 			@Param("pageNumber") Integer pageNumber,
 			@Param("pageSize") Integer pageSize
 	);
+	
+	@Query(
+			" MATCH (subject:Concept)<-[:SUBJECT]-(statement)-[:OBJECT]->(object:Concept)" +
+			" WHERE EXISTS(subject.type) AND EXISTS(object.type)"+
+			" WITH statement AS statement, subject AS subject, object AS object"+
+			" MATCH (relation:Predicate)<-[:RELATION]-(statement)"+
+			" WHERE EXISTS(relation.name)"+
+			" WITH "+
+			"    COLLECT(DISTINCT {subjectType : subject.type, objectType : object.type, relationName : relation.name}) AS rows,"+
+			"    statement as statement "+
+			" UNWIND rows AS row"+
+			" RETURN row AS row, COUNT(*) AS frequency;"
+	)
+	public List<Map<String, Object>> getKmap();
 
 }

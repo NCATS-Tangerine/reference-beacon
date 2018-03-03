@@ -1,29 +1,33 @@
 package bio.knowledge.server.model;
 
 import java.util.Objects;
-
+import bio.knowledge.server.model.BeaconStatementObject;
+import bio.knowledge.server.model.BeaconStatementPredicate;
+import bio.knowledge.server.model.BeaconStatementSubject;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import javax.validation.constraints.*;
 /**
- * Statement
+ * BeaconStatement
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-11-04T11:27:59.578-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-03-01T11:12:55.456-08:00")
 
-public class ServerStatement   {
+public class BeaconStatement   {
   @JsonProperty("id")
   private String id = null;
 
   @JsonProperty("subject")
-  private ServerStatementSubject subject = null;
+  private BeaconStatementSubject subject = null;
 
   @JsonProperty("predicate")
-  private ServerStatementPredicate predicate = null;
+  private BeaconStatementPredicate predicate = null;
 
   @JsonProperty("object")
-  private ServerStatementObject object = null;
+  private BeaconStatementObject object = null;
 
-  public ServerStatement id(String id) {
+  public BeaconStatement id(String id) {
     this.id = id;
     return this;
   }
@@ -41,7 +45,7 @@ public class ServerStatement   {
     this.id = id;
   }
 
-  public ServerStatement subject(ServerStatementSubject subject) {
+  public BeaconStatement subject(BeaconStatementSubject subject) {
     this.subject = subject;
     return this;
   }
@@ -51,15 +55,15 @@ public class ServerStatement   {
    * @return subject
   **/
   @ApiModelProperty(value = "")
-  public ServerStatementSubject getSubject() {
+  public BeaconStatementSubject getSubject() {
     return subject;
   }
 
-  public void setSubject(ServerStatementSubject subject) {
+  public void setSubject(BeaconStatementSubject subject) {
     this.subject = subject;
   }
 
-  public ServerStatement predicate(ServerStatementPredicate predicate) {
+  public BeaconStatement predicate(BeaconStatementPredicate predicate) {
     this.predicate = predicate;
     return this;
   }
@@ -69,15 +73,15 @@ public class ServerStatement   {
    * @return predicate
   **/
   @ApiModelProperty(value = "")
-  public ServerStatementPredicate getPredicate() {
+  public BeaconStatementPredicate getPredicate() {
     return predicate;
   }
 
-  public void setPredicate(ServerStatementPredicate predicate) {
+  public void setPredicate(BeaconStatementPredicate predicate) {
     this.predicate = predicate;
   }
 
-  public ServerStatement object(ServerStatementObject object) {
+  public BeaconStatement object(BeaconStatementObject object) {
     this.object = object;
     return this;
   }
@@ -87,11 +91,11 @@ public class ServerStatement   {
    * @return object
   **/
   @ApiModelProperty(value = "")
-  public ServerStatementObject getObject() {
+  public BeaconStatementObject getObject() {
     return object;
   }
 
-  public void setObject(ServerStatementObject object) {
+  public void setObject(BeaconStatementObject object) {
     this.object = object;
   }
 
@@ -104,11 +108,11 @@ public class ServerStatement   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ServerStatement statement = (ServerStatement) o;
-    return Objects.equals(this.id, statement.id) &&
-        Objects.equals(this.subject, statement.subject) &&
-        Objects.equals(this.predicate, statement.predicate) &&
-        Objects.equals(this.object, statement.object);
+    BeaconStatement beaconStatement = (BeaconStatement) o;
+    return Objects.equals(this.id, beaconStatement.id) &&
+        Objects.equals(this.subject, beaconStatement.subject) &&
+        Objects.equals(this.predicate, beaconStatement.predicate) &&
+        Objects.equals(this.object, beaconStatement.object);
   }
 
   @Override
@@ -119,7 +123,7 @@ public class ServerStatement   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Statement {\n");
+    sb.append("class BeaconStatement {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    subject: ").append(toIndentedString(subject)).append("\n");
