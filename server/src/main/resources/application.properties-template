@@ -1,2 +1,7 @@
 # Alternate server port number
 # server.port = 8090
+
+#
+# Local cache file for kmap
+#
+kmap.path=.
