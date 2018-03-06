@@ -37,7 +37,6 @@ import org.springframework.data.repository.query.Param;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.SemanticGroup;
 import bio.knowledge.model.neo4j.Neo4jConcept;
-import bio.knowledge.model.neo4j.Neo4jPredicate;
 
 /**
  * @author Richard

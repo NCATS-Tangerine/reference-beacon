@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +45,8 @@ import bio.knowledge.server.utilities.Utilities;
 @Controller
 public class ControllerImpl {
 	
+	private static Logger _logger = LoggerFactory.getLogger(ControllerImpl.class);
+			
 	@Autowired ConceptRepository conceptRepository;
 	@Autowired PredicateRepository predicateRepository;
 	@Autowired StatementRepository statementRepository;
@@ -332,26 +336,44 @@ public class ControllerImpl {
 	
 	@SuppressWarnings("unchecked")
 	private List<Map<String, Object>> loadKmap() {
+		List<Map<String, Object>> kmap = null;
+		ObjectInputStream in = null;
 		try {
 			FileInputStream fileIn = new FileInputStream(KMAP_PATH);
-			ObjectInputStream in = new ObjectInputStream(fileIn);
+			in = new ObjectInputStream(fileIn);
 			Object object = in.readObject();
-			List<Map<String, Object>> kmap = (List<Map<String, Object>>) object;
-			
-			return kmap;
+			in.close();
+			kmap = (List<Map<String, Object>>) object;
 			
 		} catch (IOException | ClassNotFoundException e) {
-			return null;
+			_logger.error(e.getMessage());
+		} finally {
+			if(in!=null)
+				try {
+					in.close();
+				} catch (IOException e) {
+					// ignore?
+				}
 		}
+		
+		return kmap;
 	}
 	
 	private void saveKmap(List<Map<String, Object>> kmap) {
+		ObjectOutputStream out = null;
 		try {
 			FileOutputStream fileOut = new FileOutputStream(KMAP_PATH);
-			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out = new ObjectOutputStream(fileOut);
 			out.writeObject(kmap);
 		} catch (IOException e) {
-			
+			_logger.error(e.getMessage());
+		} finally {
+			if(out!=null)
+				try {
+					out.close();
+				} catch (IOException e) {
+					// ignore?
+				}
 		}
 	}
 	
