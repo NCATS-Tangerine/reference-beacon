@@ -7,16 +7,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 import bio.knowledge.server.implementation.ControllerImpl;
-import bio.knowledge.server.model.ServerPredicate;
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-11-04T11:27:59.578-07:00")
+import bio.knowledge.server.model.BeaconPredicate;
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-03-01T11:12:55.456-08:00")
 
 @Controller
 public class PredicatesApiController implements PredicatesApi {
-
+	
 	@Autowired ControllerImpl ctrl;
 
-    public ResponseEntity<List<ServerPredicate>> getPredicates() {
-         return ctrl.getPredicates();
+    public ResponseEntity<List<BeaconPredicate>> getPredicates() {
+    	return ctrl.getPredicates();
     }
 
 }

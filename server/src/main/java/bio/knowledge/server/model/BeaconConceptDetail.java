@@ -6,18 +6,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
 /**
- * ConceptDetail
+ * BeaconConceptDetail
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-11-04T11:27:59.578-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-03-01T11:12:55.456-08:00")
 
-public class ServerConceptDetail   {
+public class BeaconConceptDetail   {
   @JsonProperty("tag")
   private String tag = null;
 
   @JsonProperty("value")
   private String value = null;
 
-  public ServerConceptDetail tag(String tag) {
+  public BeaconConceptDetail tag(String tag) {
     this.tag = tag;
     return this;
   }
@@ -35,7 +35,7 @@ public class ServerConceptDetail   {
     this.tag = tag;
   }
 
-  public ServerConceptDetail value(String value) {
+  public BeaconConceptDetail value(String value) {
     this.value = value;
     return this;
   }
@@ -62,9 +62,9 @@ public class ServerConceptDetail   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ServerConceptDetail conceptDetail = (ServerConceptDetail) o;
-    return Objects.equals(this.tag, conceptDetail.tag) &&
-        Objects.equals(this.value, conceptDetail.value);
+    BeaconConceptDetail beaconConceptDetail = (BeaconConceptDetail) o;
+    return Objects.equals(this.tag, beaconConceptDetail.tag) &&
+        Objects.equals(this.value, beaconConceptDetail.value);
   }
 
   @Override
@@ -75,7 +75,7 @@ public class ServerConceptDetail   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ConceptDetail {\n");
+    sb.append("class BeaconConceptDetail {\n");
     
     sb.append("    tag: ").append(toIndentedString(tag)).append("\n");
     sb.append("    value: ").append(toIndentedString(value)).append("\n");

@@ -8,19 +8,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
 /**
- * Concept
+ * BeaconConcept
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-11-04T11:27:59.578-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-03-01T11:12:55.456-08:00")
 
-public class ServerConcept   {
+public class BeaconConcept   {
   @JsonProperty("id")
   private String id = null;
 
   @JsonProperty("name")
   private String name = null;
 
-  @JsonProperty("semanticGroup")
-  private String semanticGroup = null;
+  @JsonProperty("type")
+  private String type = null;
 
   @JsonProperty("synonyms")
   private List<String> synonyms = new ArrayList<String>();
@@ -28,7 +28,7 @@ public class ServerConcept   {
   @JsonProperty("definition")
   private String definition = null;
 
-  public ServerConcept id(String id) {
+  public BeaconConcept id(String id) {
     this.id = id;
     return this;
   }
@@ -46,7 +46,7 @@ public class ServerConcept   {
     this.id = id;
   }
 
-  public ServerConcept name(String name) {
+  public BeaconConcept name(String name) {
     this.name = name;
     return this;
   }
@@ -64,30 +64,30 @@ public class ServerConcept   {
     this.name = name;
   }
 
-  public ServerConcept semanticGroup(String semanticGroup) {
-    this.semanticGroup = semanticGroup;
+  public BeaconConcept type(String type) {
+    this.type = type;
     return this;
   }
 
    /**
    * concept semantic type 
-   * @return semanticGroup
+   * @return type
   **/
   @ApiModelProperty(value = "concept semantic type ")
-  public String getSemanticGroup() {
-    return semanticGroup;
+  public String getType() {
+    return type;
   }
 
-  public void setSemanticGroup(String semanticGroup) {
-    this.semanticGroup = semanticGroup;
+  public void setType(String type) {
+    this.type = type;
   }
 
-  public ServerConcept synonyms(List<String> synonyms) {
+  public BeaconConcept synonyms(List<String> synonyms) {
     this.synonyms = synonyms;
     return this;
   }
 
-  public ServerConcept addSynonymsItem(String synonymsItem) {
+  public BeaconConcept addSynonymsItem(String synonymsItem) {
     this.synonyms.add(synonymsItem);
     return this;
   }
@@ -105,7 +105,7 @@ public class ServerConcept   {
     this.synonyms = synonyms;
   }
 
-  public ServerConcept definition(String definition) {
+  public BeaconConcept definition(String definition) {
     this.definition = definition;
     return this;
   }
@@ -132,27 +132,27 @@ public class ServerConcept   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ServerConcept concept = (ServerConcept) o;
-    return Objects.equals(this.id, concept.id) &&
-        Objects.equals(this.name, concept.name) &&
-        Objects.equals(this.semanticGroup, concept.semanticGroup) &&
-        Objects.equals(this.synonyms, concept.synonyms) &&
-        Objects.equals(this.definition, concept.definition);
+    BeaconConcept beaconConcept = (BeaconConcept) o;
+    return Objects.equals(this.id, beaconConcept.id) &&
+        Objects.equals(this.name, beaconConcept.name) &&
+        Objects.equals(this.type, beaconConcept.type) &&
+        Objects.equals(this.synonyms, beaconConcept.synonyms) &&
+        Objects.equals(this.definition, beaconConcept.definition);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, semanticGroup, synonyms, definition);
+    return Objects.hash(id, name, type, synonyms, definition);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Concept {\n");
+    sb.append("class BeaconConcept {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
-    sb.append("    semanticGroup: ").append(toIndentedString(semanticGroup)).append("\n");
+    sb.append("    type: ").append(toIndentedString(type)).append("\n");
     sb.append("    synonyms: ").append(toIndentedString(synonyms)).append("\n");
     sb.append("    definition: ").append(toIndentedString(definition)).append("\n");
     sb.append("}");

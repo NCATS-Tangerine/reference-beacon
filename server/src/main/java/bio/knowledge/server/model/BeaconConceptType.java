@@ -6,11 +6,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModelProperty;
 /**
- * Summary
+ * BeaconConceptType
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-11-04T11:27:59.578-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-03-01T11:12:55.456-08:00")
 
-public class ServerSummary   {
+public class BeaconConceptType   {
   @JsonProperty("id")
   private String id = null;
 
@@ -20,7 +20,7 @@ public class ServerSummary   {
   @JsonProperty("frequency")
   private Integer frequency = null;
 
-  public ServerSummary id(String id) {
+  public BeaconConceptType id(String id) {
     this.id = id;
     return this;
   }
@@ -38,7 +38,7 @@ public class ServerSummary   {
     this.id = id;
   }
 
-  public ServerSummary idmap(String idmap) {
+  public BeaconConceptType idmap(String idmap) {
     this.idmap = idmap;
     return this;
   }
@@ -56,7 +56,7 @@ public class ServerSummary   {
     this.idmap = idmap;
   }
 
-  public ServerSummary frequency(Integer frequency) {
+  public BeaconConceptType frequency(Integer frequency) {
     this.frequency = frequency;
     return this;
   }
@@ -83,10 +83,10 @@ public class ServerSummary   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ServerSummary summary = (ServerSummary) o;
-    return Objects.equals(this.id, summary.id) &&
-        Objects.equals(this.idmap, summary.idmap) &&
-        Objects.equals(this.frequency, summary.frequency);
+    BeaconConceptType beaconConceptType = (BeaconConceptType) o;
+    return Objects.equals(this.id, beaconConceptType.id) &&
+        Objects.equals(this.idmap, beaconConceptType.idmap) &&
+        Objects.equals(this.frequency, beaconConceptType.frequency);
   }
 
   @Override
@@ -97,7 +97,7 @@ public class ServerSummary   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Summary {\n");
+    sb.append("class BeaconConceptType {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    idmap: ").append(toIndentedString(idmap)).append("\n");

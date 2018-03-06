@@ -8,8 +8,10 @@ import com.fasterxml.jackson.databind.util.ISO8601Utils;
 
 
 public class RFC3339DateFormat extends ISO8601DateFormat {
+	
+	private static final long serialVersionUID = -4702854093613489009L;
 
-  // Same as ISO8601DateFormat but serializing milliseconds.
+// Same as ISO8601DateFormat but serializing milliseconds.
   @Override
   public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition fieldPosition) {
     String value = ISO8601Utils.format(date, true);

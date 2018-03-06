@@ -1,11 +1,19 @@
 package bio.knowledge.server.implementation;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
@@ -19,48 +27,57 @@ import bio.knowledge.model.Predicate;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.model.neo4j.Neo4jPredicate;
-import bio.knowledge.server.model.ServerAnnotation;
-import bio.knowledge.server.model.ServerConcept;
-import bio.knowledge.server.model.ServerConceptWithDetails;
-import bio.knowledge.server.model.ServerPredicate;
-import bio.knowledge.server.model.ServerStatement;
-import bio.knowledge.server.model.ServerStatementObject;
-import bio.knowledge.server.model.ServerStatementPredicate;
-import bio.knowledge.server.model.ServerStatementSubject;
-import bio.knowledge.server.model.ServerSummary;
+import bio.knowledge.server.model.BeaconAnnotation;
+import bio.knowledge.server.model.BeaconConcept;
+import bio.knowledge.server.model.BeaconConceptType;
+import bio.knowledge.server.model.BeaconConceptWithDetails;
+import bio.knowledge.server.model.BeaconKnowledgeMapObject;
+import bio.knowledge.server.model.BeaconKnowledgeMapPredicate;
+import bio.knowledge.server.model.BeaconKnowledgeMapStatement;
+import bio.knowledge.server.model.BeaconKnowledgeMapSubject;
+import bio.knowledge.server.model.BeaconPredicate;
+import bio.knowledge.server.model.BeaconStatement;
+import bio.knowledge.server.model.BeaconStatementObject;
+import bio.knowledge.server.model.BeaconStatementPredicate;
+import bio.knowledge.server.model.BeaconStatementSubject;
 import bio.knowledge.server.utilities.Utilities;
 
 @Controller
 public class ControllerImpl {
 	
+	private static Logger _logger = LoggerFactory.getLogger(ControllerImpl.class);
+			
 	@Autowired ConceptRepository conceptRepository;
 	@Autowired PredicateRepository predicateRepository;
 	@Autowired StatementRepository statementRepository;
 	@Autowired EvidenceRepository evidenceRepository;
 	
-	public ResponseEntity<List<ServerConcept>> getConcepts(
+	@Value("kmap.path")
+	private String KMAP_PATH;
+	
+	public ResponseEntity<List<BeaconConcept>> getConcepts(
 			String keywords,
-			String semanticGroups,
+			String types,
 			Integer pageNumber,
 			Integer pageSize
 	) {
 		pageNumber = Utilities.fixPageNumber(pageNumber);
 		pageSize = Utilities.fixPageSize(pageSize);
 		keywords = Utilities.urlDecode(keywords);
-		semanticGroups = Utilities.urlDecode(semanticGroups);
+		types = Utilities.urlDecode(types);
 
 		String[] filter = Utilities.buildArray(keywords);
-		String[] semanticGroupFilter = Utilities.buildArray(semanticGroups);
+		String[] semanticGroupFilter = Utilities.buildArray(types);
 
 		List<Neo4jConcept> concepts = conceptRepository.apiGetConcepts(filter, semanticGroupFilter, pageNumber, pageSize);
-		List<ServerConcept> responses = new ArrayList<ServerConcept>();
+		List<BeaconConcept> responses = new ArrayList<BeaconConcept>();
 		
 		for (Concept concept : concepts) {
-			ServerConcept response = new ServerConcept();
+			BeaconConcept response = new BeaconConcept();
 			
 			response.setId(concept.getId());
 			response.setName(concept.getName());
-			response.setSemanticGroup(concept.getSemanticGroup().name());
+			response.setType(concept.getSemanticGroup().name());
 			response.setDefinition(concept.getDescription());
 			response.setSynonyms(Arrays.asList(concept.getSynonyms().split("\\|")));
 
@@ -70,14 +87,14 @@ public class ControllerImpl {
 		return ResponseEntity.ok(responses);
 	}
 
-	public ResponseEntity<List<ServerPredicate>> getPredicates() {
+	public ResponseEntity<List<BeaconPredicate>> getPredicates() {
 		
 		List<Neo4jPredicate> data = predicateRepository.findAllPredicates();
 				
-		List<ServerPredicate> responses = new ArrayList<>();
+		List<BeaconPredicate> responses = new ArrayList<>();
 		for (Predicate predicate : data) {
 			
-			ServerPredicate response = new ServerPredicate();
+			BeaconPredicate response = new BeaconPredicate();
 			response.setId(predicate.getId());
 			response.setName(predicate.getName());
 			response.setDefinition(predicate.getDescription());
@@ -87,19 +104,19 @@ public class ControllerImpl {
 		return ResponseEntity.ok(responses);
 	}
 	
-	public ResponseEntity<List<ServerConceptWithDetails>> getConceptDetails(String conceptId) {
+	public ResponseEntity<List<BeaconConceptWithDetails>> getConceptDetails(String conceptId) {
 		conceptId = Utilities.urlDecode(conceptId);
 		
-		List<ServerConceptWithDetails> responses = new ArrayList<ServerConceptWithDetails>();
+		List<BeaconConceptWithDetails> responses = new ArrayList<BeaconConceptWithDetails>();
 		Concept concept = conceptRepository.apiGetConceptById(conceptId);
 		
 		if (concept != null) {
-			ServerConceptWithDetails response = new ServerConceptWithDetails();
+			BeaconConceptWithDetails response = new BeaconConceptWithDetails();
 			response.setDefinition(concept.getDescription());
 			response.setId(concept.getId());
 			response.setName(concept.getName());
 			String semanticType = concept.getSemanticGroup().name();
-			response.setSemanticGroup(semanticType);
+			response.setType(semanticType);
 			response.setSynonyms(Arrays.asList(concept.getSynonyms().split("\\|")));
 
 			responses.add(response);
@@ -147,7 +164,7 @@ public class ControllerImpl {
 		return ResponseEntity.ok(responses);
 	}
 	
-	public ResponseEntity<List<ServerAnnotation>> getEvidence(String statementId,
+	public ResponseEntity<List<BeaconAnnotation>> getEvidence(String statementId,
 	        String keywords,
 	        Integer pageNumber,
 	        Integer pageSize
@@ -163,7 +180,7 @@ public class ControllerImpl {
 		
 		List<Map<String, Object>> data = evidenceRepository.apiGetEvidence(statementId, filter, pageNumber, pageSize);
 		
-		List<ServerAnnotation> responses = new ArrayList<ServerAnnotation>();
+		List<BeaconAnnotation> responses = new ArrayList<BeaconAnnotation>();
 		
 		for (Map<String, Object> entry : data) {
 			String year = String.valueOf((Integer) entry.get("year"));
@@ -171,7 +188,7 @@ public class ControllerImpl {
 			String day = String.valueOf((Integer) entry.get("day"));
 			Annotation annotation = (Annotation) entry.get("annotation");
 			
-			ServerAnnotation response = new ServerAnnotation();
+			BeaconAnnotation response = new BeaconAnnotation();
 			response.setId(annotation.getId());
 			response.setLabel(annotation.getName());
 			response.setDate(year + "-" + month + "-" + day);
@@ -182,44 +199,44 @@ public class ControllerImpl {
 		return ResponseEntity.ok(responses);
 	}
 	
-	public ResponseEntity<List<ServerStatement>> getStatements(
-			List<String> source,
+	public ResponseEntity<List<BeaconStatement>> getStatements(
+			List<String> s,
 			String relations,
-			List<String> target,
+			List<String> t,
 			String keywords,
-			String semanticGroups, 
+			String types, 
 			Integer pageNumber,
 			Integer pageSize
 	) {
-		source = Utilities.urlDecode(source);
+		s = Utilities.urlDecode(s);
 		relations = Utilities.urlDecode(relations);
-		target = Utilities.urlDecode(target);
+		t = Utilities.urlDecode(t);
 		
 		keywords = Utilities.urlDecode(keywords);
-		semanticGroups = Utilities.urlDecode(semanticGroups);
+		types = Utilities.urlDecode(types);
 		pageNumber = Utilities.fixPageNumber(pageNumber);
 		pageSize = Utilities.fixPageSize(pageSize);
 
-		String[] sourceCuries = source.toArray(new String[source.size()]);
+		String[] sourceCuries = s.toArray(new String[s.size()]);
 		
 		String[] targetCuries = null;
-		if( target != null)
-			targetCuries = target.toArray(new String[target.size()]);
+		if( t != null)
+			targetCuries = t.toArray(new String[t.size()]);
 		
 		String[] filter = Utilities.buildArray(keywords);
-		String[] semanticFilter = Utilities.buildArray(semanticGroups);
+		String[] semanticFilter = Utilities.buildArray(types);
 		String[] predicateFilter = Utilities.buildArray(relations);
 
-		List<ServerStatement> responses = new ArrayList<ServerStatement>();
+		List<BeaconStatement> responses = new ArrayList<BeaconStatement>();
 
 		List<Map<String, Object>> data = statementRepository.findStatements(sourceCuries, predicateFilter, targetCuries, filter, semanticFilter, pageNumber, pageSize);
 
 		for (Map<String, Object> entry : data) {
-			ServerStatement response = new ServerStatement();
+			BeaconStatement response = new BeaconStatement();
 
-			ServerStatementObject statementsObject = new ServerStatementObject();
-			ServerStatementPredicate statementsPredicate = new ServerStatementPredicate();
-			ServerStatementSubject statementsSubject = new ServerStatementSubject();
+			BeaconStatementObject statementsObject = new BeaconStatementObject();
+			BeaconStatementPredicate statementsPredicate = new BeaconStatementPredicate();
+			BeaconStatementSubject statementsSubject = new BeaconStatementSubject();
 
 			Statement statement = (Statement) entry.get("statement");
 			Concept object = (Concept) entry.get("object");
@@ -237,7 +254,7 @@ public class ControllerImpl {
 			if (subject != null) {
 				statementsSubject.setId(subject.getId());
 				statementsSubject.setName(subject.getName());
-				statementsSubject.setSemanticGroup(subject.getSemanticGroup().name());
+				statementsSubject.setType(subject.getSemanticGroup().name());
 			}
 
 			if (relation != null) {
@@ -248,7 +265,7 @@ public class ControllerImpl {
 			if (object != null) {
 				statementsObject.setId(object.getId());
 				statementsObject.setName(object.getName());
-				statementsObject.setSemanticGroup(object.getSemanticGroup().name());
+				statementsObject.setType(object.getSemanticGroup().name());
 			}
 
 			response.setObject(statementsObject);
@@ -261,13 +278,13 @@ public class ControllerImpl {
 		return ResponseEntity.ok(responses);
 	}
 	
-	public ResponseEntity<List<ServerSummary>> linkedTypes() {
-		List<ServerSummary> responses = new ArrayList<ServerSummary>();
+	public ResponseEntity<List<BeaconConceptType>> getConceptTypes() {
+		List<BeaconConceptType> responses = new ArrayList<BeaconConceptType>();
 		
 		List<Map<String, Object>> counts = conceptRepository.countAllGroupBySemanticGroup();
 		
 		for (Map<String, Object> map : counts) {
-			ServerSummary response = new ServerSummary();
+			BeaconConceptType response = new BeaconConceptType();
 			response.setId((String) map.get("type"));
 			response.setFrequency((Integer) map.get("frequency"));
 			
@@ -276,5 +293,88 @@ public class ControllerImpl {
 		
         return ResponseEntity.ok(responses);
     }
+
+	@SuppressWarnings("unchecked")
+	public ResponseEntity<List<BeaconKnowledgeMapStatement>> getKnowledgeMap() {
+		List<Map<String, Object>> kmaps = loadKmap();
+		
+		if (kmaps == null) {
+			kmaps = statementRepository.getKmap();
+			saveKmap(kmaps);
+		}
+		
+		List<BeaconKnowledgeMapStatement> knowledgeMapStatements = new ArrayList<BeaconKnowledgeMapStatement>();
+		
+		for (Map<String, Object> kmap : kmaps) {
+			Map<String, Object> triple = (Map<String, Object>) kmap.get("row");
+			
+			Integer frequency = (Integer) kmap.get("frequency");
+			String objectType = (String) triple.get("objectType");
+			String relationName = (String) triple.get("relationName");
+			String subjectType = (String) triple.get("subjectType");
+			
+			
+			BeaconKnowledgeMapStatement knowledgeMapStatement = new BeaconKnowledgeMapStatement();
+			BeaconKnowledgeMapPredicate predicate = new BeaconKnowledgeMapPredicate();
+			BeaconKnowledgeMapObject object = new BeaconKnowledgeMapObject();
+			BeaconKnowledgeMapSubject subject = new BeaconKnowledgeMapSubject();
+			
+			object.setType(objectType);
+			subject.setType(subjectType);
+			predicate.setName(relationName);
+			
+			knowledgeMapStatement.setFrequency(frequency);
+			knowledgeMapStatement.setObject(object);
+			knowledgeMapStatement.setSubject(subject);
+			knowledgeMapStatement.setPredicate(predicate);
+			
+			knowledgeMapStatements.add(knowledgeMapStatement);
+		}
+		
+		return ResponseEntity.ok(knowledgeMapStatements);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private List<Map<String, Object>> loadKmap() {
+		List<Map<String, Object>> kmap = null;
+		ObjectInputStream in = null;
+		try {
+			FileInputStream fileIn = new FileInputStream(KMAP_PATH);
+			in = new ObjectInputStream(fileIn);
+			Object object = in.readObject();
+			in.close();
+			kmap = (List<Map<String, Object>>) object;
+			
+		} catch (IOException | ClassNotFoundException e) {
+			_logger.error(e.getMessage());
+		} finally {
+			if(in!=null)
+				try {
+					in.close();
+				} catch (IOException e) {
+					// ignore?
+				}
+		}
+		
+		return kmap;
+	}
+	
+	private void saveKmap(List<Map<String, Object>> kmap) {
+		ObjectOutputStream out = null;
+		try {
+			FileOutputStream fileOut = new FileOutputStream(KMAP_PATH);
+			out = new ObjectOutputStream(fileOut);
+			out.writeObject(kmap);
+		} catch (IOException e) {
+			_logger.error(e.getMessage());
+		} finally {
+			if(out!=null)
+				try {
+					out.close();
+				} catch (IOException e) {
+					// ignore?
+				}
+		}
+	}
 	
 }
