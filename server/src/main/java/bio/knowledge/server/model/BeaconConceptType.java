@@ -1,21 +1,25 @@
 package bio.knowledge.server.model;
 
 import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import javax.validation.constraints.*;
 /**
  * BeaconConceptType
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-03-01T11:12:55.456-08:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-03-09T10:28:16.800-08:00")
 
 public class BeaconConceptType   {
   @JsonProperty("id")
   private String id = null;
 
-  @JsonProperty("idmap")
-  private String idmap = null;
+  @JsonProperty("iri")
+  private String iri = null;
+
+  @JsonProperty("label")
+  private String label = null;
 
   @JsonProperty("frequency")
   private Integer frequency = null;
@@ -26,10 +30,10 @@ public class BeaconConceptType   {
   }
 
    /**
-   * the type  
+   * the CURIE of the type
    * @return id
   **/
-  @ApiModelProperty(value = "the type  ")
+  @ApiModelProperty(value = "the CURIE of the type")
   public String getId() {
     return id;
   }
@@ -38,22 +42,40 @@ public class BeaconConceptType   {
     this.id = id;
   }
 
-  public BeaconConceptType idmap(String idmap) {
-    this.idmap = idmap;
+  public BeaconConceptType iri(String iri) {
+    this.iri = iri;
     return this;
   }
 
    /**
-   * The URL to execute the exactmatches API call on the id
-   * @return idmap
+   * The full IRI, generally resolve the full semantic description of the type
+   * @return iri
   **/
-  @ApiModelProperty(value = "The URL to execute the exactmatches API call on the id")
-  public String getIdmap() {
-    return idmap;
+  @ApiModelProperty(value = "The full IRI, generally resolve the full semantic description of the type")
+  public String getIri() {
+    return iri;
   }
 
-  public void setIdmap(String idmap) {
-    this.idmap = idmap;
+  public void setIri(String iri) {
+    this.iri = iri;
+  }
+
+  public BeaconConceptType label(String label) {
+    this.label = label;
+    return this;
+  }
+
+   /**
+   * human readable name (\"rdfs:label\")
+   * @return label
+  **/
+  @ApiModelProperty(value = "human readable name (\"rdfs:label\")")
+  public String getLabel() {
+    return label;
+  }
+
+  public void setLabel(String label) {
+    this.label = label;
   }
 
   public BeaconConceptType frequency(Integer frequency) {
@@ -62,10 +84,10 @@ public class BeaconConceptType   {
   }
 
    /**
-   * the number of instances of the specified type 
+   * the number of concept entries of the specified type in the beacon knowledge base
    * @return frequency
   **/
-  @ApiModelProperty(value = "the number of instances of the specified type ")
+  @ApiModelProperty(value = "the number of concept entries of the specified type in the beacon knowledge base")
   public Integer getFrequency() {
     return frequency;
   }
@@ -85,13 +107,14 @@ public class BeaconConceptType   {
     }
     BeaconConceptType beaconConceptType = (BeaconConceptType) o;
     return Objects.equals(this.id, beaconConceptType.id) &&
-        Objects.equals(this.idmap, beaconConceptType.idmap) &&
+        Objects.equals(this.iri, beaconConceptType.iri) &&
+        Objects.equals(this.label, beaconConceptType.label) &&
         Objects.equals(this.frequency, beaconConceptType.frequency);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, idmap, frequency);
+    return Objects.hash(id, iri, label, frequency);
   }
 
   @Override
@@ -100,7 +123,8 @@ public class BeaconConceptType   {
     sb.append("class BeaconConceptType {\n");
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    idmap: ").append(toIndentedString(idmap)).append("\n");
+    sb.append("    iri: ").append(toIndentedString(iri)).append("\n");
+    sb.append("    label: ").append(toIndentedString(label)).append("\n");
     sb.append("    frequency: ").append(toIndentedString(frequency)).append("\n");
     sb.append("}");
     return sb.toString();
