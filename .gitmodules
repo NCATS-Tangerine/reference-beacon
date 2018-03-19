@@ -1,0 +1,3 @@
+[submodule "biolink-model-java"]
+	path = biolink-model-java
+	url = https://github.com/lhannest/biolink-model-java.git
