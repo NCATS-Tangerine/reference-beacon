@@ -6,6 +6,7 @@ evaluationDependsOn(':database')
 dependencies {
 
 	compile project(':database')
+	compile project(':biolink-model-java')
 
     compile("org.springframework:spring-context:4.2.6.RELEASE")
 
