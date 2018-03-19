@@ -237,7 +237,9 @@ paths:
             a (urlencoded) space delimited set of keywords or substrings against
             which to match concept names and synonyms
           required: true
-          type: string
+          type: array
+          items:
+            type: string
         - name: types
           in: query
           description: >
@@ -247,7 +249,9 @@ paths:
             Model](https://biolink.github.io/biolink-model) for the full list of
             codes)
           required: false
-          type: string
+          type: array
+          items:
+            type: string
         - name: pageNumber
           in: query
           description: |
@@ -584,7 +588,9 @@ paths:
             set of concept-relations matched by any of the input exact matching
             concepts
           required: false
-          type: string
+          type: array
+          items:
+            type: string
         - name: types
           in: query
           description: >
@@ -594,7 +600,9 @@ paths:
             Model](https://biolink.github.io/biolink-model) for the full list of
             codes)
           required: false
-          type: string
+          type: array
+          items:
+            type: string
         - name: pageNumber
           in: query
           description: |
@@ -713,7 +721,9 @@ paths:
             (url-encoded, space delimited) keyword filter to apply against the
             label field of the annotation
           required: false
-          type: string
+          type: array
+          items:
+            type: string
         - name: pageNumber
           in: query
           description: |
