@@ -92,39 +92,45 @@ public class ControllerImpl {
 		return null;
 	}
 	
-	private String[] biolinkToUmls(String[] biolinkClasses) {
+	/**
+	 * Returns a list of UMLS categories that map onto the given
+	 * biolink classes. If no mapping exists for some biolink class
+	 * then a NO_MATCH string is added to the list to ensure that
+	 * filter is active (resulting in no matches for that filter).
+	 */
+	private List<String> biolinkToUmls(List<String> biolinkClasses) {
 		if (biolinkClasses == null) {
 			return null;
 		}
 		
 		Set<BiolinkClass> classes = new HashSet<BiolinkClass>();
 		
-		for (BiolinkClass c : biolinkModel.getClasses()) {
-			for (String name : biolinkClasses) {
-				if (name.equals(c.getName())) {
-					classes.add(c);
-					classes.addAll(inheritanceLookup.getDescendants(c));
-				}
-			}
+		for (String name : biolinkClasses) {
+			BiolinkClass c = modelLookup.getClassByName(name);
+			classes.add(c);
+			classes.addAll(inheritanceLookup.getDescendants(c));
 		}
 		
-		biolinkClasses = classes.stream().map(c -> c.getName()).collect(Collectors.toList()).toArray(new String[classes.size()]);
+		biolinkClasses = classes.stream().map(c -> c.getName()).collect(Collectors.toList());
 		
 		Set<String> curies = new HashSet<String>();
 		
 		for (String biolinkClass : biolinkClasses) {
 			String curie = biolinkToUmls(biolinkClass);
 			if (curie != null) {
+				curie = curie.replace(UMLS_SEMGROUP_PREFIX, "");
 				curies.add(curie);
+			} else {
+				curies.add("NO_MATCH[" + biolinkClass + "]");
 			}
 		}
 		
-		return curies.toArray(new String[curies.size()]);
+		return new ArrayList<String>(curies);
 	}
 	
 	public ResponseEntity<List<BeaconConcept>> getConcepts(
-			String keywords,
-			String types,
+			List<String> keywords,
+			List<String> types,
 			Integer pageNumber,
 			Integer pageSize
 	) {
@@ -132,12 +138,10 @@ public class ControllerImpl {
 		pageSize = Utilities.fixPageSize(pageSize);
 		keywords = Utilities.urlDecode(keywords);
 		types = Utilities.urlDecode(types);
+		
+		types = biolinkToUmls(types);
 
-		String[] filter = Utilities.buildArray(keywords);
-		String[] semanticGroupFilter = Utilities.buildArray(types);
-		semanticGroupFilter = biolinkToUmls(semanticGroupFilter);
-
-		List<Neo4jConcept> concepts = conceptRepository.apiGetConcepts(filter, semanticGroupFilter, pageNumber, pageSize);
+		List<Neo4jConcept> concepts = conceptRepository.apiGetConcepts(keywords, types, pageNumber, pageSize);
 		List<BeaconConcept> responses = new ArrayList<BeaconConcept>();
 		
 		for (Concept concept : concepts) {
@@ -235,7 +239,7 @@ public class ControllerImpl {
 	}
 	
 	public ResponseEntity<List<BeaconAnnotation>> getEvidence(String statementId,
-	        String keywords,
+	        List<String> keywords,
 	        Integer pageNumber,
 	        Integer pageSize
 	) {
@@ -246,9 +250,7 @@ public class ControllerImpl {
 		pageSize = Utilities.fixPageSize(pageSize);
 		keywords = Utilities.urlDecode(keywords);
 		
-		String[] filter = Utilities.buildArray(keywords);
-		
-		List<Map<String, Object>> data = evidenceRepository.apiGetEvidence(statementId, filter, pageNumber, pageSize);
+		List<Map<String, Object>> data = evidenceRepository.apiGetEvidence(statementId, keywords, pageNumber, pageSize);
 		
 		List<BeaconAnnotation> responses = new ArrayList<BeaconAnnotation>();
 		
@@ -273,8 +275,8 @@ public class ControllerImpl {
 			List<String> s,
 			String relations,
 			List<String> t,
-			String keywords,
-			String types, 
+			List<String> keywords,
+			List<String> types, 
 			Integer pageNumber,
 			Integer pageSize
 	) {
@@ -293,14 +295,21 @@ public class ControllerImpl {
 		if( t != null)
 			targetCuries = t.toArray(new String[t.size()]);
 		
-		String[] filter = Utilities.buildArray(keywords);
-		String[] semanticFilter = Utilities.buildArray(types);
-		semanticFilter = biolinkToUmls(semanticFilter);
+		types = biolinkToUmls(types);
+		
 		String[] predicateFilter = Utilities.buildArray(relations);
 
 		List<BeaconStatement> responses = new ArrayList<BeaconStatement>();
 
-		List<Map<String, Object>> data = statementRepository.findStatements(sourceCuries, predicateFilter, targetCuries, filter, semanticFilter, pageNumber, pageSize);
+		List<Map<String, Object>> data = statementRepository.findStatements(
+				sourceCuries,
+				predicateFilter,
+				targetCuries,
+				keywords,
+				types,
+				pageNumber,
+				pageSize
+		);
 
 		for (Map<String, Object> entry : data) {
 			BeaconStatement response = new BeaconStatement();
