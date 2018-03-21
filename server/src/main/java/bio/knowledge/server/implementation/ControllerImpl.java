@@ -36,6 +36,7 @@ import bio.knowledge.ontology.BiolinkClass;
 import bio.knowledge.ontology.BiolinkModel;
 import bio.knowledge.ontology.mapping.InheritanceLookup;
 import bio.knowledge.ontology.mapping.ModelLookup;
+import bio.knowledge.ontology.mapping.NameSpace;
 import bio.knowledge.server.model.BeaconAnnotation;
 import bio.knowledge.server.model.BeaconConcept;
 import bio.knowledge.server.model.BeaconConceptType;
@@ -364,8 +365,19 @@ public class ControllerImpl {
 		List<Map<String, Object>> counts = conceptRepository.countAllGroupBySemanticGroup();
 		
 		for (Map<String, Object> map : counts) {
+			
 			BeaconConceptType response = new BeaconConceptType();
-			response.setId(umlsToBiolink((String) map.get("type")));
+			
+			String local_id = (String) map.get("type");
+			String biolinkTerm = umlsToBiolink(local_id);
+			
+			response.setId(NameSpace.BIOLINK.getCurie(biolinkTerm));
+			response.setLabel(biolinkTerm);
+			response.setIri(NameSpace.BIOLINK.getIri(biolinkTerm));
+			
+			//response.setId(local_id);
+			//response.setXref(NameSpace.UMLS.getIri(local_id));
+			
 			response.setFrequency((Integer) map.get("frequency"));
 			
 			responses.add(response);
