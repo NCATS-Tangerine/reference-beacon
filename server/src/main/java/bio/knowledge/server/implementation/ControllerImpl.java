@@ -57,8 +57,6 @@ public class ControllerImpl {
 	
 	private static Logger _logger = LoggerFactory.getLogger(ControllerImpl.class);
 	
-	private static final String UMLS_SEMGROUP_PREFIX = "UMLSSG:";
-			
 	@Autowired ConceptRepository conceptRepository;
 	@Autowired PredicateRepository predicateRepository;
 	@Autowired StatementRepository statementRepository;
@@ -78,14 +76,18 @@ public class ControllerImpl {
 	@Value("kmap.path")
 	private String KMAP_PATH;
 	
-	private String umlsToBiolink(String semGroup) {
-		return modelLookup.lookupName(UMLS_SEMGROUP_PREFIX + semGroup);
+	private String umlsToBiolinkLabel(String semGroup) {
+		return modelLookup.lookupName(NameSpace.UMLSSG.getPrefix() + semGroup);
+	}
+	
+	private String wikidataToBiolinkDescription(String curie) {
+		return modelLookup.lookupDescription(curie);
 	}
 	
 	private String biolinkToUmls(String biolinkClassName) {
 		Set<String> curies = modelLookup.reverseLookup(biolinkClassName);
 		for (String curie : curies) {
-			if (curie.startsWith(UMLS_SEMGROUP_PREFIX)) {
+			if (curie.startsWith(NameSpace.UMLSSG.getPrefix())) {
 				return curie;
 			}
 		}
@@ -119,7 +121,7 @@ public class ControllerImpl {
 		for (String biolinkClass : biolinkClasses) {
 			String curie = biolinkToUmls(biolinkClass);
 			if (curie != null) {
-				curie = curie.replace(UMLS_SEMGROUP_PREFIX, "");
+				curie = curie.replace(NameSpace.UMLSSG.getPrefix(), "");
 				curies.add(curie);
 			} else {
 				curies.add("NO_MATCH[" + biolinkClass + "]");
@@ -148,7 +150,7 @@ public class ControllerImpl {
 		for (Concept concept : concepts) {
 			BeaconConcept response = new BeaconConcept();
 			
-			String type = umlsToBiolink(concept.getSemanticGroup().name());
+			String type = umlsToBiolinkLabel(concept.getSemanticGroup().name());
 			
 			response.setId(concept.getId());
 			response.setName(concept.getName());
@@ -169,10 +171,18 @@ public class ControllerImpl {
 		List<BeaconPredicate> responses = new ArrayList<>();
 		for (Predicate predicate : data) {
 			
+			String curie = predicate.getId();
+			String name = predicate.getName();
+			String description = predicate.getDescription();
+			
 			BeaconPredicate response = new BeaconPredicate();
-			response.setId(predicate.getId());
-			response.setName(predicate.getName());
-			response.setDefinition(predicate.getDescription());
+			
+			response.setId(curie);
+			response.setName(name);
+			
+			if(description==null)
+				description = wikidataToBiolinkDescription(curie);
+			response.setDefinition(description);
 			
 			responses.add(response);
 		}
@@ -190,7 +200,7 @@ public class ControllerImpl {
 			response.setDefinition(concept.getDescription());
 			response.setId(concept.getId());
 			response.setName(concept.getName());
-			String type = umlsToBiolink(concept.getSemanticGroup().name());
+			String type = umlsToBiolinkLabel(concept.getSemanticGroup().name());
 			response.setType(type);
 			response.setSynonyms(Arrays.asList(concept.getSynonyms().split("\\|")));
 
@@ -335,7 +345,7 @@ public class ControllerImpl {
 			if (subject != null) {
 				statementsSubject.setId(subject.getId());
 				statementsSubject.setName(subject.getName());
-				statementsSubject.setType(umlsToBiolink(subject.getSemanticGroup().name()));
+				statementsSubject.setType(umlsToBiolinkLabel(subject.getSemanticGroup().name()));
 			}
 
 			if (relation != null) {
@@ -346,7 +356,7 @@ public class ControllerImpl {
 			if (object != null) {
 				statementsObject.setId(object.getId());
 				statementsObject.setName(object.getName());
-				statementsObject.setType(umlsToBiolink(object.getSemanticGroup().name()));
+				statementsObject.setType(umlsToBiolinkLabel(object.getSemanticGroup().name()));
 			}
 
 			response.setObject(statementsObject);
@@ -370,15 +380,20 @@ public class ControllerImpl {
 			
 			String local_id = (String) map.get("type");
 
-			String biolinkTerm = umlsToBiolink(local_id);
+			String biolinkTerm = umlsToBiolinkLabel(local_id);
 
 			if(biolinkTerm!=null) {
 				
 				response.setId(NameSpace.BIOLINK.getCurie(biolinkTerm));
 				response.setLabel(biolinkTerm);
 				response.setIri(NameSpace.BIOLINK.getIri(biolinkTerm));
+				
+				// TODO: add in local id metadata, etc.
 				//response.setId(local_id);
 				//response.setXref(NameSpace.UMLS.getIri(local_id));
+				//String description = umlsToBiolinkDescription(local_id);
+				//response.setDescription(description);
+				
 				response.setFrequency((Integer) map.get("frequency"));
 				responses.add(response);
 				
@@ -405,11 +420,11 @@ public class ControllerImpl {
 			Map<String, Object> triple = (Map<String, Object>) kmap.get("row");
 			
 			String subjectType = (String) triple.get("subjectType");
-			String subjectBiolinkTerm = umlsToBiolink(subjectType);
+			String subjectBiolinkTerm = umlsToBiolinkLabel(subjectType);
 			if(subjectBiolinkTerm==null) continue;
 			
 			String objectType = (String) triple.get("objectType");
-			String objectBiolinkTerm = umlsToBiolink(objectType);
+			String objectBiolinkTerm = umlsToBiolinkLabel(objectType);
 			if(objectBiolinkTerm==null) continue;
 			
 			BeaconKnowledgeMapStatement knowledgeMapStatement = new BeaconKnowledgeMapStatement();
@@ -427,6 +442,13 @@ public class ControllerImpl {
 			predicate.setId(NameSpace.BIOLINK.getCurie(relationName));
 			predicate.setName(relationName);
 			knowledgeMapStatement.setPredicate(predicate);
+			
+			// Just using the predicate description here?
+			knowledgeMapStatement.setDescription(
+					subjectBiolinkTerm+" "+
+					relationName+" "+
+					objectBiolinkTerm
+			);
 			
 			Integer frequency = (Integer) kmap.get("frequency");
 			knowledgeMapStatement.setFrequency(frequency);

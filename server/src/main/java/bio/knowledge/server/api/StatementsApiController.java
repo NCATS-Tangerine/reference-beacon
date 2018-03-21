@@ -26,7 +26,7 @@ public class StatementsApiController implements StatementsApi {
          @ApiParam(value = "a (url-encoded, space-delimited) string of concept types (specified as codes gene, pathway, etc.) to which to constrain the subject or object concepts associated with the query seed concept (see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of codes) ") @RequestParam(value = "types", required = false) List<String> types,
          @ApiParam(value = "(1-based) number of the page to be returned in a paged set of query results ") @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
          @ApiParam(value = "number of concepts per page to be returned in a paged set of query results ") @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-        return ctrl.getStatements(keywords, relations, types, keywords, types, pageNumber, pageSize);
+        return ctrl.getStatements(s, relations, t, keywords, types, pageNumber, pageSize);
     }
 
 }
