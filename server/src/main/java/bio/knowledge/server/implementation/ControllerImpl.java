@@ -401,27 +401,35 @@ public class ControllerImpl {
 		List<BeaconKnowledgeMapStatement> knowledgeMapStatements = new ArrayList<BeaconKnowledgeMapStatement>();
 		
 		for (Map<String, Object> kmap : kmaps) {
+			
 			Map<String, Object> triple = (Map<String, Object>) kmap.get("row");
 			
-			Integer frequency = (Integer) kmap.get("frequency");
-			String objectType = (String) triple.get("objectType");
-			String relationName = (String) triple.get("relationName");
 			String subjectType = (String) triple.get("subjectType");
+			String subjectBiolinkTerm = umlsToBiolink(subjectType);
+			if(subjectBiolinkTerm==null) continue;
 			
+			String objectType = (String) triple.get("objectType");
+			String objectBiolinkTerm = umlsToBiolink(objectType);
+			if(objectBiolinkTerm==null) continue;
 			
 			BeaconKnowledgeMapStatement knowledgeMapStatement = new BeaconKnowledgeMapStatement();
-			BeaconKnowledgeMapPredicate predicate = new BeaconKnowledgeMapPredicate();
-			BeaconKnowledgeMapObject object = new BeaconKnowledgeMapObject();
+			
 			BeaconKnowledgeMapSubject subject = new BeaconKnowledgeMapSubject();
-			
-			object.setType(umlsToBiolink(objectType));
-			subject.setType(umlsToBiolink(subjectType));
-			predicate.setName(relationName);
-			
-			knowledgeMapStatement.setFrequency(frequency);
-			knowledgeMapStatement.setObject(object);
+			subject.setType(subjectBiolinkTerm);
 			knowledgeMapStatement.setSubject(subject);
+
+			BeaconKnowledgeMapObject object = new BeaconKnowledgeMapObject();
+			object.setType(objectBiolinkTerm);
+			knowledgeMapStatement.setObject(object);
+			
+			BeaconKnowledgeMapPredicate predicate = new BeaconKnowledgeMapPredicate();
+			String relationName = (String) triple.get("relationName");
+			predicate.setId(NameSpace.BIOLINK.getCurie(relationName));
+			predicate.setName(relationName);
 			knowledgeMapStatement.setPredicate(predicate);
+			
+			Integer frequency = (Integer) kmap.get("frequency");
+			knowledgeMapStatement.setFrequency(frequency);
 			
 			knowledgeMapStatements.add(knowledgeMapStatement);
 		}
