@@ -369,18 +369,21 @@ public class ControllerImpl {
 			BeaconConceptType response = new BeaconConceptType();
 			
 			String local_id = (String) map.get("type");
+
 			String biolinkTerm = umlsToBiolink(local_id);
-			
-			response.setId(NameSpace.BIOLINK.getCurie(biolinkTerm));
-			response.setLabel(biolinkTerm);
-			response.setIri(NameSpace.BIOLINK.getIri(biolinkTerm));
-			
-			//response.setId(local_id);
-			//response.setXref(NameSpace.UMLS.getIri(local_id));
-			
-			response.setFrequency((Integer) map.get("frequency"));
-			
-			responses.add(response);
+
+			if(biolinkTerm!=null) {
+				
+				response.setId(NameSpace.BIOLINK.getCurie(biolinkTerm));
+				response.setLabel(biolinkTerm);
+				response.setIri(NameSpace.BIOLINK.getIri(biolinkTerm));
+				//response.setId(local_id);
+				//response.setXref(NameSpace.UMLS.getIri(local_id));
+				response.setFrequency((Integer) map.get("frequency"));
+				responses.add(response);
+				
+			} else
+				_logger.debug("ControllerImpl.getConceptTypes(): Warning: local id '"+local_id+"' has no Biolink Model mapping? Ignored!");
 		}
 		
         return ResponseEntity.ok(responses);
