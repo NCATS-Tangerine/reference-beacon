@@ -386,8 +386,8 @@ public interface StatementRepository extends GraphRepository<Neo4jGeneralStateme
 			@Param("sources") String[] sources,
 			@Param("relationIds") String[] relationIds,
 			@Param("targets") String[] targets,
-			@Param("filter") String[] filter,
-			@Param("semanticGroups") String[] semanticGroups,
+			@Param("filter") List<String> filter,
+			@Param("semanticGroups") List<String> semanticGroups,
 			@Param("pageNumber") Integer pageNumber,
 			@Param("pageSize") Integer pageSize
 	);

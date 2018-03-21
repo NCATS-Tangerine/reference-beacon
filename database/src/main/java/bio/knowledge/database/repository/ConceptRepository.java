@@ -160,8 +160,8 @@ public interface ConceptRepository extends GraphRepository<Neo4jConcept> {
 			" LIMIT {pageSize} "
 	)
 	public List<Neo4jConcept> apiGetConcepts(
-			@Param("filter") String[] filter,
-			@Param("semanticGroups") String[] semanticGroups,
+			@Param("filter") List<String> filter,
+			@Param("semanticGroups") List<String> semanticGroups,
 			@Param("pageNumber") Integer pageNumber,
 			@Param("pageSize") Integer pageSize
 	);

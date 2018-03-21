@@ -1,2 +1,2 @@
 rootProject.name = 'reference-beacon'
-include 'server', 'database', 'models'
+include 'server', 'database', 'models', 'biolink-model-java'

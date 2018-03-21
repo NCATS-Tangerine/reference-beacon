@@ -67,7 +67,7 @@ public interface EvidenceRepository extends GraphRepository<Neo4jEvidence> {
 	)
 	public List<Map<String, Object>> apiGetEvidence(
 		@Param("statementId") String statementId,
-		@Param("filter") String[] filter,
+		@Param("filter") List<String> filter,
 		@Param("pageNumber") Integer pageNumber,
 		@Param("pageSize") Integer pageSize
 	);

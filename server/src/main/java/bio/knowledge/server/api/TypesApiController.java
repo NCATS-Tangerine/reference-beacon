@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller;
 
 import bio.knowledge.server.implementation.ControllerImpl;
 import bio.knowledge.server.model.BeaconConceptType;
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-03-09T10:28:16.800-08:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-03-19T11:44:00.504-07:00")
 
 @Controller
 public class TypesApiController implements TypesApi {
@@ -16,7 +16,7 @@ public class TypesApiController implements TypesApi {
 	@Autowired ControllerImpl ctrl;
 
     public ResponseEntity<List<BeaconConceptType>> getConceptTypes() {
-         return ctrl.getConceptTypes();
+        return ctrl.getConceptTypes();
     }
 
 }

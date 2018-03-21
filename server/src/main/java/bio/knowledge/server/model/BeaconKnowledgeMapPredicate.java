@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * BeaconKnowledgeMapPredicate
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-03-09T10:28:16.800-08:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-03-19T11:44:00.504-07:00")
 
 public class BeaconKnowledgeMapPredicate   {
   @JsonProperty("id")
