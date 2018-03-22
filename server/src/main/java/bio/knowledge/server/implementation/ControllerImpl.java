@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
@@ -171,6 +172,8 @@ public class ControllerImpl {
 		List<BeaconPredicate> responses = new ArrayList<>();
 		for (Predicate predicate : data) {
 			
+			if(predicate.getName().isEmpty()) continue;
+			
 			String curie = predicate.getId();
 			String name = predicate.getName();
 			String description = predicate.getDescription();
@@ -276,12 +279,25 @@ public class ControllerImpl {
 			response.setLabel(annotation.getName());
 			response.setDate(year + "-" + month + "-" + day);
 			
+			response.setType("TAS");
+			
 			responses.add(response);
 		}
 		
 		return ResponseEntity.ok(responses);
 	}
 	
+	/**
+	 * 
+	 * @param s
+	 * @param relations
+	 * @param t
+	 * @param keywords
+	 * @param types
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
 	public ResponseEntity<List<BeaconStatement>> getStatements(
 			List<String> s,
 			String relations,
@@ -292,6 +308,13 @@ public class ControllerImpl {
 			Integer pageSize
 	) {
 		s = Utilities.urlDecode(s);
+		
+		if(s == null) {
+			ResponseEntity<List<BeaconStatement>> response =
+					new ResponseEntity<List<BeaconStatement>>(HttpStatus.BAD_REQUEST);
+			return response;
+		}
+		
 		relations = Utilities.urlDecode(relations);
 		t = Utilities.urlDecode(t);
 		
