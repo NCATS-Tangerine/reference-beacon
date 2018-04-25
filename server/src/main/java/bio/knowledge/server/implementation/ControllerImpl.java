@@ -35,6 +35,7 @@ import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.model.neo4j.Neo4jPredicate;
 import bio.knowledge.ontology.BiolinkClass;
 import bio.knowledge.ontology.BiolinkModel;
+import bio.knowledge.ontology.BiolinkSlot;
 import bio.knowledge.ontology.mapping.InheritanceLookup;
 import bio.knowledge.ontology.mapping.ModelLookup;
 import bio.knowledge.ontology.mapping.NameSpace;
@@ -63,31 +64,40 @@ public class ControllerImpl {
 	@Autowired StatementRepository statementRepository;
 	@Autowired EvidenceRepository evidenceRepository;
 	
-	ModelLookup modelLookup;
 	BiolinkModel biolinkModel;
-	InheritanceLookup inheritanceLookup;
+	
+	InheritanceLookup<BiolinkClass> classInheritanceLookup;
+	ModelLookup<BiolinkClass> classModelLookup;
+	
+	InheritanceLookup<BiolinkSlot> slotInheritanceLookup;
+	ModelLookup<BiolinkSlot> slotModelLookup;
 	
 	@PostConstruct
 	public void init() {
 		biolinkModel = BiolinkModel.get();
-		modelLookup = ModelLookup.get();
-		inheritanceLookup = InheritanceLookup.get();
+		
+		classInheritanceLookup = new InheritanceLookup<BiolinkClass>(biolinkModel.getClasses());
+		classModelLookup = new ModelLookup<BiolinkClass>(biolinkModel.getClasses(), classInheritanceLookup);
+		
+		slotInheritanceLookup = new InheritanceLookup<BiolinkSlot>(biolinkModel.getSlots());
+		slotModelLookup = new ModelLookup<BiolinkSlot>(biolinkModel.getSlots(), slotInheritanceLookup);
 	}
 	
 	@Value("kmap.path")
 	private String KMAP_PATH;
 	
 	private String umlsToBiolinkLabel(String semGroup) {
-		return modelLookup.lookupName(NameSpace.UMLSSG.getPrefix() + semGroup);
+		return classModelLookup.lookupName(NameSpace.UMLSSG.getPrefix() + semGroup);
 	}
 	
 	private String wikidataToBiolinkDescription(String curie) {
-		return modelLookup.lookupDescription(curie);
+		return classModelLookup.lookupDescription(curie);
 	}
 	
 	private String biolinkToUmls(String biolinkClassName) {
-		Set<String> curies = modelLookup.reverseLookup(biolinkClassName);
-		for (String curie : curies) {
+		BiolinkClass biolinkClass = classModelLookup.getClassByName(biolinkClassName);
+		
+		for (String curie : biolinkClass.getMappings()) {
 			if (curie.startsWith(NameSpace.UMLSSG.getPrefix())) {
 				return curie;
 			}
@@ -110,9 +120,9 @@ public class ControllerImpl {
 		Set<BiolinkClass> classes = new HashSet<BiolinkClass>();
 		
 		for (String name : biolinkClasses) {
-			BiolinkClass c = modelLookup.getClassByName(name);
+			BiolinkClass c = classModelLookup.getClassByName(name);
 			classes.add(c);
-			classes.addAll(inheritanceLookup.getDescendants(c));
+			classes.addAll(classInheritanceLookup.getDescendants(c));
 		}
 		
 		biolinkClasses = classes.stream().map(c -> c.getName()).collect(Collectors.toList());
