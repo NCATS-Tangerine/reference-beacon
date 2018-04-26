@@ -29,14 +29,14 @@ package bio.knowledge.database.repository.organization;
 import java.util.Set;
 
 import org.springframework.data.neo4j.annotation.Query;
-import org.springframework.data.neo4j.repository.GraphRepository;
+import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import bio.knowledge.model.organization.Person;
 
 @Repository
-public interface PersonRepository extends GraphRepository<Person> {
+public interface PersonRepository extends Neo4jRepository<Person,Long> {
 
     Person findByName(String name);
 

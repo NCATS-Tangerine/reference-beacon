@@ -32,7 +32,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Query;
-import org.springframework.data.neo4j.repository.GraphRepository;
+import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
 
 import bio.knowledge.model.neo4j.Neo4jConcept;
@@ -45,7 +45,7 @@ import bio.knowledge.model.neo4j.Neo4jGeneralStatement;
  * @author Chandan Mishra
  *
  */
-public interface StatementRepository extends GraphRepository<Neo4jGeneralStatement> {
+public interface StatementRepository extends Neo4jRepository<Neo4jGeneralStatement,Long> {
 
 	/**
 	 * @return

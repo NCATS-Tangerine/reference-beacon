@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.neo4j.annotation.Query;
-import org.springframework.data.neo4j.repository.GraphRepository;
+import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
 
 import bio.knowledge.model.neo4j.Neo4jEvidence;
@@ -38,7 +38,7 @@ import bio.knowledge.model.neo4j.Neo4jEvidence;
  * @author Richard
  *
  */
-public interface EvidenceRepository extends GraphRepository<Neo4jEvidence> {
+public interface EvidenceRepository extends Neo4jRepository<Neo4jEvidence,Long> {
 	
 	@Query("MERGE (evidence:Evidence:IdentifiedEntity:DatabaseEntity { accessionId : \"kbe:\"+{evidenceId} }) "
 			+"ON CREATE SET "

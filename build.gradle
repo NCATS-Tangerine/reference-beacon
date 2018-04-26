@@ -1,27 +1,34 @@
 // NCATS Translator Knowledge.Bio (TKBio) Main Meta-Project Root Build File
 
-ext.apacheHTTPClientVersion  = '4.5.2'
-ext.springCoreVersion        = '4.3.2.RELEASE'
-ext.jacksonXmlVersion        = '2.8.1'
-ext.logbackCoreVersion       = '1.1.7'
-ext.springBootVersion        = '1.3.7.RELEASE'
-ext.springDataNeo4jVersion   = '4.1.2.RELEASE'
-ext.springNeo4jVersion       = '3.0.4'
-ext.springNeo4jOGMVersion    = '2.0.3'
+ext {
+	gradleVersion            = '4.6'
+	apacheHTTPClientVersion  = '4.5.2'
+	springCoreVersion        = '5.0.4.RELEASE'
+	jacksonXmlVersion        = '2.9.4'
+	logbackCoreVersion       = '1.2.3'
+	springBootVersion        = '2.0.0.RC1'
+	springDataVersion        = 'Kay-SR3'
+	springDataNeo4jVersion   = '5.0.4.RELEASE'
+	springNeo4jVersion       = '3.3.4'
+	springNeo4jOGMVersion    = '3.0.3'
+	springfoxSwaggerVersion  = '2.5.0'
+}
 
 buildscript {
     ext {
-        springBootVersion = '1.3.5.RELEASE'
+        springBootVersion = '2.0.0.RC1'
+        springDependencyMgmtVersion = '1.0.4.RELEASE'
     }
     repositories {
         mavenCentral()
-        maven { url "https://repo.spring.io/libs-release" }
+		maven { url "https://repo.spring.io/libs-release" }
+		maven { url 'https://repo.spring.io/libs-milestone' }
         maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion") 
-        classpath("io.spring.gradle:dependency-management-plugin:0.6.0.RELEASE")
-        classpath("com.eriwen:gradle-css-plugin:2.12.0")
+        classpath("io.spring.gradle:dependency-management-plugin:$springDependencyMgmtVersion")
+        classpath("com.eriwen:gradle-css-plugin:2.14.0")
     }
 }
 
@@ -29,14 +36,12 @@ allprojects {
 
 	// Version 4.0 now uses the new Translator Knowledge Beacon API
 	
-	// This release implements the Translator Knowledge Beacon version 1.0.14 API with enhanced
-	// management of semantic groups and predicates in statement queries (plus the new /predicates endpoint)
-	version = '1.0.14'  
+	// This release implements the Translator Knowledge Beacon version 1.0.17 API
+	version = '1.0.17'  
 	
     apply plugin: 'maven'
     apply plugin: 'java'
     apply plugin: 'eclipse-wtp'
-    apply plugin: 'spring-boot'
     apply plugin: 'io.spring.dependency-management'
 		
 	group = 'bio.knowledge'
@@ -103,9 +108,10 @@ allprojects {
     	compile "org.springframework.boot:spring-boot-starter-logging:$springBootVersion"
     	compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
     	compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
-    	compile "org.springframework.boot:spring-boot-starter-mail:$springBootVersion"
+    	//compile "org.springframework.boot:spring-boot-starter-mail:$springBootVersion"
    		compile "org.springframework.boot:spring-boot-starter-tomcat:$springBootVersion"
-
+		compile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+ 
 	   	compile "org.neo4j:neo4j-codegen:$springNeo4jVersion"
 	   	compile "org.neo4j:neo4j:$springNeo4jVersion"
 	    compile "org.neo4j:neo4j-kernel:$springNeo4jVersion"
@@ -119,24 +125,20 @@ allprojects {
     	compile "org.springframework.data:spring-data-neo4j:$springDataNeo4jVersion"
 
 		testCompile 'junit:junit:4.12'
-		compile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
-    }
+   }
     
 	dependencyManagement {
 		imports { 
 			mavenBom "org.springframework.cloud:spring-cloud-starter-parent:Angel.SR3" 
+			mavenBom "org.springframework:spring-framework-bom:${springCoreVersion}"
 			mavenBom 'org.springframework.data:spring-data-releasetrain:Hopper-SR1'
 		}
 	}
-	
-}
-
-//evaluationDependsOn(':dataloader')
-//evaluationDependsOn(':rest')
-//evaluationDependsOn(':web')
-
-dependencies {
-    compile project(':server')
+		
+    jar {
+        from sourceSets.main.allSource
+        manifest.attributes provider: 'STAR Informatics'
+    }
 }
 
 configurations {
@@ -152,12 +154,6 @@ configurations.all {
     }
 }
 
-dependencies {
-//	compile project(':dataloader')
-//	compile project(':rest')
-//	compile project(':web')
-}
-
 eclipse {
     classpath {
          containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
@@ -166,15 +162,102 @@ eclipse {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.12'
+    gradleVersion = "$gradleVersion"
 }
 
-springBoot {
-    mainClass = "bio.knowledge.server.Swagger2SpringBoot"
+project(':models') {
+
+	archivesBaseName  = 'rkb-models'
+	description       = 'NCATS Translator Reference Beacon (RKB) Domain Model Interfaces and Classes'
+
+	evaluationDependsOn(':ontology')
+
+	dependencies {
+		compile project(':ontology')
+		compile("org.springframework.data:spring-data-neo4j:$springDataNeo4jVersion")
+	}
 }
 
-jar {
-    manifest {
-        attributes("Main-Class": "bio.knowledge.server.Swagger2SpringBoot")
-    }
+project(':database') {
+
+	archivesBaseName  = 'rkb-database'
+	description       = 'NCATS Translator Reference Beacon (RKB) Neo4j Database Middleware'
+	
+	evaluationDependsOn(':models')
+
+	dependencies {
+  
+		compile project(':models')
+		
+		compile("org.springframework.boot:spring-boot:$springBootVersion")
+		compile("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
+		
+		compile("org.springframework.data:spring-data-neo4j:$springDataNeo4jVersion")
+		compile "org.neo4j:neo4j-codegen:$springNeo4jVersion"
+		compile "org.neo4j:neo4j:$springNeo4jVersion"
+		compile "org.neo4j:neo4j-kernel:$springNeo4jVersion"
+		compile "org.neo4j:neo4j-io:$springNeo4jVersion"
+			
+		compile("org.neo4j:neo4j-ogm-core:$springNeo4jOGMVersion")
+		compile "org.neo4j:neo4j-ogm-http-driver:$springNeo4jOGMVersion"
+		compile "org.neo4j:neo4j-ogm-embedded-driver:$springNeo4jOGMVersion"
+		compile "org.neo4j:neo4j-ogm-bolt-driver:$springNeo4jOGMVersion"
+  }
+}
+
+project(':server') {
+
+	archivesBaseName  = 'reference-beacon'
+	description       = 'Reference Knowledge Beacon Using Knowledge.Bio 3.0 Database Access'
+	
+    apply plugin: 'org.springframework.boot'
+	
+	evaluationDependsOn(':database')
+	
+	dependencies {
+	
+		compile project(':database')
+	
+    	compile "org.springframework:spring-context:$springCoreVersion"
+    	compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+		compile "org.springframework.boot:spring-boot-starter-parent:$springBootVersion"
+		
+	    compile("io.springfox:springfox-swagger2:$springfoxSwaggerVersion")
+	    compile("io.springfox:springfox-swagger-ui:$springfoxSwaggerVersion")
+	
+	    // https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-joda
+	    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-joda', version: '2.9.0.pr2'
+	
+	    // https://mvnrepository.com/artifact/joda-time/joda-time
+	    compile group: 'joda-time', name: 'joda-time', version: '2.9.9'
+	
+	    // https://mvnrepository.com/artifact/javax.validation/validation-api
+	    compile group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
+	    
+		// https://mvnrepository.com/artifact/io.swagger/swagger-jaxrs
+		compile group: 'io.swagger', name: 'swagger-jaxrs', version: '1.5.0'
+	
+	    compile 'javax.validation:validation-api:1.1.0.Final'
+	    
+	    compile 'org.hibernate:hibernate-validator:5.2.2.Final'
+	    compile 'commons-cli:commons-cli:1.1'
+	}
+	
+	jar {
+	    from sourceSets.main.allSource
+	    manifest {
+	        attributes("Main-Class": "bio.knowledge.server.Swagger2SpringBoot")
+	        attributes("provider": "STAR Informatics")
+	    }
+	}
+	
+	//springBoot {
+    //	mainClassName = "bio.knowledge.server.Swagger2SpringBoot"
+	//}
+}
+
+evaluationDependsOn(':server')
+
+dependencies {
+    compile project(':server')
 }

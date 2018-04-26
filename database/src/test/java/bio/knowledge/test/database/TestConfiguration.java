@@ -1,8 +1,10 @@
 /*-------------------------------------------------------------------------------
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Scripps Institute (USA) - Dr. Benjamin Good
- *                   Delphinai Corporation (Canada) / MedgenInformatics - Dr. Richard Bruskiewich
+ * Copyright (c) 2015-17 STAR Informatics / Delphinai Corporation (Canada) - Dr. Richard Bruskiewich
+ * Copyright (c) 2017    NIH National Center for Advancing Translational Sciences (NCATS)
+ * Copyright (c) 2015-16 Scripps Institute (USA) - Dr. Benjamin Good
+ *                       
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,22 +29,17 @@ package bio.knowledge.test.database;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
-import org.neo4j.ogm.session.Session;
+import org.neo4j.ogm.config.ClasspathConfigurationSource;
+import org.neo4j.ogm.config.ConfigurationSource;
 import org.neo4j.ogm.session.SessionFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.CustomScopeConfigurer;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.context.support.SimpleThreadScope;
-import org.springframework.data.neo4j.config.Neo4jConfiguration;
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
-import org.springframework.mail.javamail.JavaMailSender ;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.data.neo4j.transaction.Neo4jTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
@@ -61,46 +58,32 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 		}
 )
 @EnableTransactionManagement(mode=AdviceMode.PROXY,proxyTargetClass=true)
-public class TestConfiguration extends Neo4jConfiguration {
+public class TestConfiguration {
 
 	@Bean
-	public org.neo4j.ogm.config.Configuration getConfiguration() {
-		org.neo4j.ogm.config.Configuration config = new org.neo4j.ogm.config.Configuration();
-	   config
-	       .driverConfiguration()
-	       .setDriverClassName("org.neo4j.ogm.drivers.embedded.driver.EmbeddedDriver");
-	   return config;
-	}
+    public org.neo4j.ogm.config.Configuration getConfiguration() {
+        ConfigurationSource properties = new ClasspathConfigurationSource("ogm.properties");
+        org.neo4j.ogm.config.Configuration configuration = 
+        		new org.neo4j.ogm.config.Configuration.Builder(properties).build();
+        return configuration;
+    }
 	
 	/* (non-Javadoc)
 	 * @see org.springframework.data.neo4j.config.Neo4jConfiguration#getSessionFactory()
 	 */
-	@Override
-    public SessionFactory getSessionFactory() {
+	@Bean
+    public SessionFactory getSessionFactory(org.neo4j.ogm.config.Configuration configuration) {
         return new SessionFactory(
-        		getConfiguration(),
+        		configuration,
         		"bio.knowledge.model"
         );
     }
-    
-    @Override
-    @Bean
-    @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
-    public Session getSession() throws Exception {
-        return super.getSession();
-    }
-    
-    /*************************************************************************************
-     * see http://blog.solidcraft.eu/2011/04/how-to-test-spring-session-scoped-beans.html
-     *************************************************************************************/
-    //@Bean
-    //public SimpleThreadScope simpleThreadScope() {
-    //	return new SimpleThreadScope() ;
-    //}
-    
-    //@Autowired
-    //private Scope mockSessionScope ;
-    
+	
+	@Bean
+	public Neo4jTransactionManager getTransactionManager(SessionFactory sessionFactory) {
+		return new Neo4jTransactionManager(sessionFactory);
+	}
+
     @Bean
     public CustomScopeConfigurer configureScope() {
     	CustomScopeConfigurer csConfig = new CustomScopeConfigurer() ;
@@ -108,48 +91,6 @@ public class TestConfiguration extends Neo4jConfiguration {
     	scopeMap.put("session", new SimpleThreadScope() ) ;
     	csConfig.setScopes(scopeMap) ;
     	return csConfig ;
-    }
-    
-    /*
-     * Administrative Mail Configuration
-     */
-
-    @Value("${spring.mail.host}")
-	private String host ;
-	
-	@Value("${spring.mail.port}")
-	private String portStr ;
-	
-	@Value("${spring.mail.username}")
-	private String username ;
-	
-	@Value("${spring.mail.password}")
-	private String password ;
-	
-	// Not sure why this isn't automatically defined in the kb2 test suite...
-    @Bean
-    public JavaMailSender javaMailSender() {
-    	
-    	JavaMailSenderImpl ms = new JavaMailSenderImpl() ;
-    	
-    	ms.setHost(host);
-    	
-    	Integer port ;
-		try {
-			port   = Integer.parseInt(portStr);
-		} catch(NumberFormatException nfe) {
-			port = 587 ; // sensible default?
-		}
-    	ms.setPort(port.intValue());
-    	ms.setUsername(username);
-    	ms.setPassword(password);
-    	
-    	Properties jmp = new Properties() ;
-    	jmp.put("mail.smtp.auth",true) ;
-    	jmp.put("mail.smtp.starttls.enable",true) ;
-    	ms.setJavaMailProperties(jmp);
-    	
-    	return ms ;
     }
     
 }
