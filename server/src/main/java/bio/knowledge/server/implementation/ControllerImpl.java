@@ -484,8 +484,8 @@ public class ControllerImpl {
 					objectBiolinkTerm
 			);
 			
-			Integer frequency = (Integer) kmap.get("frequency");
-			knowledgeMapStatement.setFrequency(frequency);
+			Long frequency = (Long) kmap.get("frequency");
+			knowledgeMapStatement.setFrequency(frequency != null ? frequency.intValue() : null);
 			
 			knowledgeMapStatements.add(knowledgeMapStatement);
 		}
