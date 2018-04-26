@@ -279,9 +279,9 @@ public class ControllerImpl {
 		List<BeaconAnnotation> responses = new ArrayList<BeaconAnnotation>();
 		
 		for (Map<String, Object> entry : data) {
-			String year = String.valueOf((Integer) entry.get("year"));
-			String month = String.valueOf((Integer) entry.get("month"));
-			String day = String.valueOf((Integer) entry.get("day"));
+			String year = String.valueOf((Long) entry.get("year"));
+			String month = String.valueOf((Long) entry.get("month"));
+			String day = String.valueOf((Long) entry.get("day"));
 			Annotation annotation = (Annotation) entry.get("annotation");
 			
 			BeaconAnnotation response = new BeaconAnnotation();
@@ -427,7 +427,8 @@ public class ControllerImpl {
 				//String description = umlsToBiolinkDescription(local_id);
 				//response.setDescription(description);
 				
-				response.setFrequency((Integer) map.get("frequency"));
+				Long frequency = (Long) map.get("frequency");
+				response.setFrequency(frequency != null ? frequency.intValue() : null);
 				responses.add(response);
 				
 			} else
