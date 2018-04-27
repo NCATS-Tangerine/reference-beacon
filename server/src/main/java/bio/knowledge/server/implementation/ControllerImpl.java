@@ -369,6 +369,7 @@ public class ControllerImpl {
 
 	@SuppressWarnings("unchecked")
 	public ResponseEntity<List<BeaconKnowledgeMapStatement>> getKnowledgeMap() {
+		
 		List<Map<String, Object>> kmaps = loadKmap();
 		
 		if (kmaps == null) {
@@ -401,9 +402,17 @@ public class ControllerImpl {
 			knowledgeMapStatement.setObject(object);
 			
 			BeaconKnowledgeMapPredicate predicate = new BeaconKnowledgeMapPredicate();
+			
+			/*
+			 * For now, use the actual predicate identifier from the database.
+			 * If and when we translate this into Biolink/local, we'll fix this again?
+			 */
+			String relationId = (String) triple.get("relationId");
+			predicate.setId(relationId);
+
 			String relationName = (String) triple.get("relationName");
-			predicate.setId(NameSpace.BIOLINK.getCurie(relationName));
 			predicate.setName(relationName);
+			
 			knowledgeMapStatement.setPredicate(predicate);
 			
 			// Just using the predicate description here?

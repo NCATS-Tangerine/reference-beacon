@@ -399,7 +399,7 @@ public interface StatementRepository extends Neo4jRepository<Neo4jGeneralStateme
 			" WITH statement AS statement, subject AS subject, object AS object"+
 			" MATCH (relation:Predicate)<-[:RELATION]-(statement)"+
 			" WHERE EXISTS(relation.name)"+
-			" WITH COLLECT({subjectType : subject.type, objectType : object.type, relationName : relation.name}) AS rows"+
+			" WITH COLLECT({subjectType : subject.type, objectType : object.type, relationId : relation.accessionId, relationName : relation.name}) AS rows"+
 			" UNWIND rows AS row"+
 			" RETURN row AS row, COUNT(*) AS frequency;"
 	)
