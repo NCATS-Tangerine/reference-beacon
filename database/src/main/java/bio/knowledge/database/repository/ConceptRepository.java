@@ -31,7 +31,7 @@ import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Query;
-import org.springframework.data.neo4j.repository.GraphRepository;
+import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
 
 import bio.knowledge.model.Concept;
@@ -42,7 +42,7 @@ import bio.knowledge.model.neo4j.Neo4jConcept;
  * @author Richard
  *
  */
-public interface ConceptRepository extends GraphRepository<Neo4jConcept> {
+public interface ConceptRepository extends Neo4jRepository<Neo4jConcept,Long> {
 	
 	@Query( "CREATE CONSTRAINT ON (concept:Concept)"
 	      + " ASSERT concept.accessionId IS UNIQUE")
@@ -147,11 +147,13 @@ public interface ConceptRepository extends GraphRepository<Neo4jConcept> {
 			" MATCH (concept:Concept) " +
 			" WITH " +
 			" 	SIZE(FILTER(x IN {filter} WHERE LOWER(concept.name) CONTAINS LOWER(x))) AS num_name_matches, " +
-			" 	SIZE(FILTER(x IN {filter} WHERE LOWER(concept.synonyms) CONTAINS LOWER(x))) AS num_syn_matches, " +
+			" 	SIZE(FILTER(x IN {filter} WHERE concept.synonyms CONTAINS x)) AS num_syn_matches, " +
 			"	SIZE(FILTER(x IN {filter} WHERE LOWER(concept.description) CONTAINS LOWER(x))) AS num_desc_matches, " +
 			" 	concept AS concept " +
 			" WHERE concept.usage > 0 AND ( " +
-			" 	num_name_matches > 0 OR num_syn_matches > 0 OR num_desc_matches > 0 " +
+			" 	num_name_matches > 0 OR "
+			+ "num_syn_matches > 0 OR "
+			+ "num_desc_matches > 0 " +
 			" ) AND ( "+
 			" 	{semanticGroups} IS NULL OR SIZE({semanticGroups}) = 0 OR " +
 			" 	ANY (x IN {semanticGroups} WHERE LOWER(concept.semanticGroup) = LOWER(x)) " +

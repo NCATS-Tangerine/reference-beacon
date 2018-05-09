@@ -29,7 +29,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Query;
-import org.springframework.data.neo4j.repository.GraphRepository;
+import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -37,7 +37,7 @@ import bio.knowledge.model.organization.neo4j.Neo4jContactForm;
 
 @Repository
 public interface Neo4jContactFormRepository
-	extends GraphRepository<Neo4jContactForm> {
+	extends Neo4jRepository<Neo4jContactForm,Long> {
 
 	@Query("MATCH (form:ContactForm) RETURN form")
 	Iterable<Neo4jContactForm> getContactForms() ;

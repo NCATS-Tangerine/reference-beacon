@@ -7,13 +7,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,18 +22,17 @@ import bio.knowledge.database.repository.ConceptRepository;
 import bio.knowledge.database.repository.EvidenceRepository;
 import bio.knowledge.database.repository.PredicateRepository;
 import bio.knowledge.database.repository.StatementRepository;
+
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.Predicate;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.model.neo4j.Neo4jPredicate;
-import bio.knowledge.ontology.BiolinkClass;
-import bio.knowledge.ontology.BiolinkModel;
-import bio.knowledge.ontology.BiolinkSlot;
-import bio.knowledge.ontology.mapping.InheritanceLookup;
-import bio.knowledge.ontology.mapping.ModelLookup;
+
 import bio.knowledge.ontology.mapping.NameSpace;
+import bio.knowledge.ontology.mapping.umls.UMLSBiolinkMapping;
+
 import bio.knowledge.server.model.BeaconAnnotation;
 import bio.knowledge.server.model.BeaconConcept;
 import bio.knowledge.server.model.BeaconConceptCategory;
@@ -53,6 +47,7 @@ import bio.knowledge.server.model.BeaconStatementObject;
 import bio.knowledge.server.model.BeaconStatementPredicate;
 import bio.knowledge.server.model.BeaconStatementSubject;
 import bio.knowledge.server.model.ExactMatchResponse;
+
 import bio.knowledge.server.utilities.Utilities;
 
 @Controller
@@ -60,89 +55,23 @@ public class ControllerImpl {
 	
 	private static Logger _logger = LoggerFactory.getLogger(ControllerImpl.class);
 	
-	@Autowired ConceptRepository conceptRepository;
-	@Autowired PredicateRepository predicateRepository;
-	@Autowired StatementRepository statementRepository;
-	@Autowired EvidenceRepository evidenceRepository;
-	
-	BiolinkModel biolinkModel;
-	
-	InheritanceLookup<BiolinkClass> classInheritanceLookup;
-	ModelLookup<BiolinkClass> classModelLookup;
-	
-	InheritanceLookup<BiolinkSlot> slotInheritanceLookup;
-	ModelLookup<BiolinkSlot> slotModelLookup;
-	
-	@PostConstruct
-	public void init() {
-		biolinkModel = BiolinkModel.get();
-		
-		classInheritanceLookup = new InheritanceLookup<BiolinkClass>(biolinkModel.getClasses());
-		classModelLookup = new ModelLookup<BiolinkClass>(biolinkModel.getClasses(), classInheritanceLookup);
-		
-		slotInheritanceLookup = new InheritanceLookup<BiolinkSlot>(biolinkModel.getSlots());
-		slotModelLookup = new ModelLookup<BiolinkSlot>(biolinkModel.getSlots(), slotInheritanceLookup);
-	}
+	@Autowired private ConceptRepository conceptRepository;
+	@Autowired private PredicateRepository predicateRepository;
+	@Autowired private StatementRepository statementRepository;
+	@Autowired private EvidenceRepository evidenceRepository;
+	@Autowired private UMLSBiolinkMapping mapping;
 	
 	@Value("kmap.path")
 	private String KMAP_PATH;
 	
-	private String umlsToBiolinkLabel(String semGroup) {
-		return classModelLookup.lookupName(NameSpace.UMLSSG.getPrefix() + semGroup);
-	}
-	
-	private String wikidataToBiolinkDescription(String curie) {
-		return classModelLookup.lookupDescription(curie);
-	}
-	
-	private String biolinkToUmls(String biolinkClassName) {
-		BiolinkClass biolinkClass = classModelLookup.getClassByName(biolinkClassName);
-		
-		for (String curie : biolinkClass.getMappings()) {
-			if (curie.startsWith(NameSpace.UMLSSG.getPrefix())) {
-				return curie;
-			}
-		}
-		
-		return null;
-	}
-	
 	/**
-	 * Returns a list of UMLS categories that map onto the given
-	 * biolink classes. If no mapping exists for some biolink class
-	 * then a NO_MATCH string is added to the list to ensure that
-	 * filter is active (resulting in no matches for that filter).
+	 * 
+	 * @param keywords
+	 * @param types
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
 	 */
-	private List<String> biolinkToUmls(List<String> biolinkClasses) {
-		if (biolinkClasses == null) {
-			return null;
-		}
-		
-		Set<BiolinkClass> classes = new HashSet<BiolinkClass>();
-		
-		for (String name : biolinkClasses) {
-			BiolinkClass c = classModelLookup.getClassByName(name);
-			classes.add(c);
-			classes.addAll(classInheritanceLookup.getDescendants(c));
-		}
-		
-		biolinkClasses = classes.stream().map(c -> c.getName()).collect(Collectors.toList());
-		
-		Set<String> curies = new HashSet<String>();
-		
-		for (String biolinkClass : biolinkClasses) {
-			String curie = biolinkToUmls(biolinkClass);
-			if (curie != null) {
-				curie = curie.replace(NameSpace.UMLSSG.getPrefix(), "");
-				curies.add(curie);
-			} else {
-				curies.add("NO_MATCH[" + biolinkClass + "]");
-			}
-		}
-		
-		return new ArrayList<String>(curies);
-	}
-	
 	public ResponseEntity<List<BeaconConcept>> getConcepts(
 			List<String> keywords,
 			List<String> categories,
@@ -152,7 +81,7 @@ public class ControllerImpl {
 		keywords = Utilities.urlDecode(keywords);
 		categories = Utilities.urlDecode(categories);
 		
-		categories = biolinkToUmls(categories);
+		categories = mapping.biolinkToUmls(categories);
 
 		List<Neo4jConcept> concepts = conceptRepository.apiGetConcepts(keywords, categories, size);
 		List<BeaconConcept> responses = new ArrayList<BeaconConcept>();
@@ -160,7 +89,7 @@ public class ControllerImpl {
 		for (Concept concept : concepts) {
 			BeaconConcept response = new BeaconConcept();
 			
-			String category = umlsToBiolinkLabel(concept.getSemanticGroup().name());
+			String category = mapping.umlsToBiolinkLabel(concept.getSemanticGroup().name());
 			
 			response.setId(concept.getId());
 			response.setName(concept.getName());
@@ -210,8 +139,10 @@ public class ControllerImpl {
 			response.setDefinition(concept.getDescription());
 			response.setId(concept.getId());
 			response.setName(concept.getName());
-			String category = umlsToBiolinkLabel(concept.getSemanticGroup().name());
+
+			String category = mapping.umlsToBiolinkLabel(concept.getSemanticGroup().name());
 			response.category(category);
+			
 			response.setSynonyms(Arrays.asList(concept.getSynonyms().split("\\|")));
 
 			responses.add(response);
@@ -278,9 +209,9 @@ public class ControllerImpl {
 		List<BeaconAnnotation> responses = new ArrayList<BeaconAnnotation>();
 		
 		for (Map<String, Object> entry : data) {
-			String year = String.valueOf((Integer) entry.get("year"));
-			String month = String.valueOf((Integer) entry.get("month"));
-			String day = String.valueOf((Integer) entry.get("day"));
+			String year = String.valueOf((Long) entry.get("year"));
+			String month = String.valueOf((Long) entry.get("month"));
+			String day = String.valueOf((Long) entry.get("day"));
 			Annotation annotation = (Annotation) entry.get("annotation");
 			
 			BeaconAnnotation response = new BeaconAnnotation();
@@ -336,7 +267,7 @@ public class ControllerImpl {
 		if( t != null)
 			targetCuries = t.toArray(new String[t.size()]);
 		
-		categories = biolinkToUmls(categories);
+		categories = mapping.biolinkToUmls(categories);
 
 		List<BeaconStatement> responses = new ArrayList<BeaconStatement>();
 
@@ -372,7 +303,7 @@ public class ControllerImpl {
 			if (subject != null) {
 				statementsSubject.setId(subject.getId());
 				statementsSubject.setName(subject.getName());
-				statementsSubject.category(umlsToBiolinkLabel(subject.getSemanticGroup().name()));
+				statementsSubject.category(mapping.umlsToBiolinkLabel(subject.getSemanticGroup().name()));
 			}
 
 			if (relation != null) {
@@ -384,7 +315,7 @@ public class ControllerImpl {
 			if (object != null) {
 				statementsObject.setId(object.getId());
 				statementsObject.setName(object.getName());
-				statementsObject.setCategory(umlsToBiolinkLabel(object.getSemanticGroup().name()));
+				statementsObject.setCategory(mapping.umlsToBiolinkLabel(object.getSemanticGroup().name()));
 			}
 
 			response.setObject(statementsObject);
@@ -408,7 +339,7 @@ public class ControllerImpl {
 			
 			String local_id = (String) map.get("type");
 
-			String biolinkTerm = umlsToBiolinkLabel(local_id);
+			String biolinkTerm = mapping.umlsToBiolinkLabel(local_id);
 
 			if(biolinkTerm!=null) {
 				
@@ -422,7 +353,8 @@ public class ControllerImpl {
 				//String description = umlsToBiolinkDescription(local_id);
 				//response.setDescription(description);
 				
-				response.setFrequency((Integer) map.get("frequency"));
+				Long frequency = (Long) map.get("frequency");
+				response.setFrequency(frequency != null ? frequency.intValue() : null);
 				responses.add(response);
 				
 			} else
@@ -434,6 +366,7 @@ public class ControllerImpl {
 
 	@SuppressWarnings("unchecked")
 	public ResponseEntity<List<BeaconKnowledgeMapStatement>> getKnowledgeMap() {
+		
 		List<Map<String, Object>> kmaps = loadKmap();
 		
 		if (kmaps == null) {
@@ -448,11 +381,11 @@ public class ControllerImpl {
 			Map<String, Object> triple = (Map<String, Object>) kmap.get("row");
 			
 			String subjectType = (String) triple.get("subjectType");
-			String subjectBiolinkTerm = umlsToBiolinkLabel(subjectType);
+			String subjectBiolinkTerm = mapping.umlsToBiolinkLabel(subjectType);
 			if(subjectBiolinkTerm==null) continue;
 			
 			String objectType = (String) triple.get("objectType");
-			String objectBiolinkTerm = umlsToBiolinkLabel(objectType);
+			String objectBiolinkTerm = mapping.umlsToBiolinkLabel(objectType);
 			if(objectBiolinkTerm==null) continue;
 			
 			BeaconKnowledgeMapStatement knowledgeMapStatement = new BeaconKnowledgeMapStatement();
@@ -466,9 +399,17 @@ public class ControllerImpl {
 			knowledgeMapStatement.setObject(object);
 			
 			BeaconKnowledgeMapPredicate predicate = new BeaconKnowledgeMapPredicate();
+			
+			/*
+			 * For now, use the actual predicate identifier from the database.
+			 * If and when we translate this into Biolink/local, we'll fix this again?
+			 */
+			String relationId = (String) triple.get("relationId");
+			
 			String relationName = (String) triple.get("relationName");
 //			predicate.setId(NameSpace.BIOLINK.getCurie(relationName));
 			predicate.setRelation(relationName);
+
 			knowledgeMapStatement.setPredicate(predicate);
 			
 			// Just using the predicate description here?
@@ -478,8 +419,8 @@ public class ControllerImpl {
 					objectBiolinkTerm
 			);
 			
-			Integer frequency = (Integer) kmap.get("frequency");
-			knowledgeMapStatement.setFrequency(frequency);
+			Long frequency = (Long) kmap.get("frequency");
+			knowledgeMapStatement.setFrequency(frequency != null ? frequency.intValue() : null);
 			
 			knowledgeMapStatements.add(knowledgeMapStatement);
 		}

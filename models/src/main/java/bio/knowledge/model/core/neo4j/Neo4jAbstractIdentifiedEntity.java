@@ -43,6 +43,7 @@ public class Neo4jAbstractIdentifiedEntity
 
     /**
      */
+	@Property(name="uri")
 	private String uri = "";
 
     /**
@@ -52,10 +53,12 @@ public class Neo4jAbstractIdentifiedEntity
 
     /**
      */
+	@Property(name="name")
 	private String name = "";
 
     /**
      */
+	@Property(name="description")
     private String description = "";
     
     /**
