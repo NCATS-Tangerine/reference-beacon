@@ -137,8 +137,11 @@ public interface ConceptRepository extends GraphRepository<Neo4jConcept> {
 
 	public List<Neo4jConcept> findByNameLikeIgnoreCase( @Param("filter") String filter, Pageable pageable );
 	
-	@Query("MATCH (concept:Concept) WHERE concept.accessionId = {curieId} RETURN concept;")
-	public Concept apiGetConceptById(@Param("curieId") String curieId);
+	@Query("MATCH (concept:Concept) WHERE concept.accessionid = {accessionId} RETURN COUNT(concept) > 0")
+	public boolean isConceptAvailable(@Param("accessionId") String accessionId);
+	
+	@Query("MATCH (concept:Concept) WHERE concept.accessionId = {accessionId} RETURN concept;")
+	public Concept apiGetConceptById(@Param("accessionId") String accessionId);
 	
 	@Query(
 			" MATCH (concept:Concept) " +
@@ -156,13 +159,11 @@ public interface ConceptRepository extends GraphRepository<Neo4jConcept> {
 			" RETURN " +
 			" 	concept " +
 			" ORDER BY num_name_matches DESC, num_syn_matches DESC, num_desc_matches DESC " +
-			" SKIP  ({pageNumber} - 1) * {pageSize} " +
 			" LIMIT {pageSize} "
 	)
 	public List<Neo4jConcept> apiGetConcepts(
 			@Param("filter") List<String> filter,
 			@Param("semanticGroups") List<String> semanticGroups,
-			@Param("pageNumber") Integer pageNumber,
 			@Param("pageSize") Integer pageSize
 	);
 

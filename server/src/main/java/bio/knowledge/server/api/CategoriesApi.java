@@ -1,6 +1,6 @@
 package bio.knowledge.server.api;
 
-import bio.knowledge.server.model.BeaconPredicate;
+import bio.knowledge.server.model.BeaconConceptCategory;
 
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
@@ -17,15 +17,15 @@ import java.util.List;
 import javax.validation.constraints.*;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-05-08T20:39:58.606-07:00")
 
-@Api(value = "predicates", description = "the predicates API")
-public interface PredicatesApi {
+@Api(value = "categories", description = "the categories API")
+public interface CategoriesApi {
 
-    @ApiOperation(value = "", notes = "Get a list of predicates used in statements issued by the knowledge source ", response = BeaconPredicate.class, responseContainer = "List", tags={ "metadata", })
+    @ApiOperation(value = "", notes = "Get a list of concept categories and number of their concept instances documented by the knowledge source. These types should be mapped onto the Translator-endorsed Biolink Model concept type classes with local types, explicitly added as mappings to the Biolink Model YAML file.  ", response = BeaconConceptCategory.class, responseContainer = "List", tags={ "metadata", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Successful response with predicates with CURIE and definitions indexed by beacons which support the relation ", response = BeaconPredicate.class) })
-    @RequestMapping(value = "/predicates",
+        @ApiResponse(code = 200, message = "Successful response with categories and frequency returned ", response = BeaconConceptCategory.class) })
+    @RequestMapping(value = "/categories",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<BeaconPredicate>> getPredicates();
+    ResponseEntity<List<BeaconConceptCategory>> getConceptCategories();
 
 }

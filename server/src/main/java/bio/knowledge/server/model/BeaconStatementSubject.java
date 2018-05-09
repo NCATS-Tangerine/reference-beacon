@@ -1,14 +1,15 @@
 package bio.knowledge.server.model;
 
 import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import javax.validation.constraints.*;
 /**
  * BeaconStatementSubject
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-03-19T11:44:00.504-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-05-08T20:39:58.606-07:00")
 
 public class BeaconStatementSubject   {
   @JsonProperty("id")
@@ -17,8 +18,8 @@ public class BeaconStatementSubject   {
   @JsonProperty("name")
   private String name = null;
 
-  @JsonProperty("type")
-  private String type = null;
+  @JsonProperty("category")
+  private String category = null;
 
   public BeaconStatementSubject id(String id) {
     this.id = id;
@@ -56,22 +57,22 @@ public class BeaconStatementSubject   {
     this.name = name;
   }
 
-  public BeaconStatementSubject type(String type) {
-    this.type = type;
+  public BeaconStatementSubject category(String category) {
+    this.category = category;
     return this;
   }
 
    /**
-   * a semantic group for the subject concept (specified as a code gene, pathway, disease, etc. - see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of codes) 
-   * @return type
+   * a semantic group for the subject concept (specified as a code gene, pathway, disease, etc. - see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of categories) 
+   * @return category
   **/
-  @ApiModelProperty(value = "a semantic group for the subject concept (specified as a code gene, pathway, disease, etc. - see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of codes) ")
-  public String getType() {
-    return type;
+  @ApiModelProperty(value = "a semantic group for the subject concept (specified as a code gene, pathway, disease, etc. - see [Biolink Model](https://biolink.github.io/biolink-model) for the full list of categories) ")
+  public String getCategory() {
+    return category;
   }
 
-  public void setType(String type) {
-    this.type = type;
+  public void setCategory(String category) {
+    this.category = category;
   }
 
 
@@ -86,12 +87,12 @@ public class BeaconStatementSubject   {
     BeaconStatementSubject beaconStatementSubject = (BeaconStatementSubject) o;
     return Objects.equals(this.id, beaconStatementSubject.id) &&
         Objects.equals(this.name, beaconStatementSubject.name) &&
-        Objects.equals(this.type, beaconStatementSubject.type);
+        Objects.equals(this.category, beaconStatementSubject.category);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, type);
+    return Objects.hash(id, name, category);
   }
 
   @Override
@@ -101,7 +102,7 @@ public class BeaconStatementSubject   {
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
-    sb.append("    type: ").append(toIndentedString(type)).append("\n");
+    sb.append("    category: ").append(toIndentedString(category)).append("\n");
     sb.append("}");
     return sb.toString();
   }

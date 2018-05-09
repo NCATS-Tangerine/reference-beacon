@@ -379,16 +379,14 @@ public interface StatementRepository extends GraphRepository<Neo4jGeneralStateme
 
 			" RETURN DISTINCT statement as statement, subject as subject, relation as relation, object as object, evidence as evidence" +
 			" ORDER BY evidence.count DESC " +
-			" SKIP ({pageNumber} - 1) * {pageSize} " +
 			" LIMIT {pageSize} "
 	)
 	List<Map<String, Object>> findStatements(
 			@Param("sources") String[] sources,
-			@Param("relationIds") String[] relationIds,
+			@Param("relationIds") List<String> relationIds,
 			@Param("targets") String[] targets,
 			@Param("filter") List<String> filter,
 			@Param("semanticGroups") List<String> semanticGroups,
-			@Param("pageNumber") Integer pageNumber,
 			@Param("pageSize") Integer pageSize
 	);
 	

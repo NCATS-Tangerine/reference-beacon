@@ -41,7 +41,7 @@ import bio.knowledge.ontology.mapping.ModelLookup;
 import bio.knowledge.ontology.mapping.NameSpace;
 import bio.knowledge.server.model.BeaconAnnotation;
 import bio.knowledge.server.model.BeaconConcept;
-import bio.knowledge.server.model.BeaconConceptType;
+import bio.knowledge.server.model.BeaconConceptCategory;
 import bio.knowledge.server.model.BeaconConceptWithDetails;
 import bio.knowledge.server.model.BeaconKnowledgeMapObject;
 import bio.knowledge.server.model.BeaconKnowledgeMapPredicate;
@@ -52,6 +52,7 @@ import bio.knowledge.server.model.BeaconStatement;
 import bio.knowledge.server.model.BeaconStatementObject;
 import bio.knowledge.server.model.BeaconStatementPredicate;
 import bio.knowledge.server.model.BeaconStatementSubject;
+import bio.knowledge.server.model.ExactMatchResponse;
 import bio.knowledge.server.utilities.Utilities;
 
 @Controller
@@ -144,28 +145,26 @@ public class ControllerImpl {
 	
 	public ResponseEntity<List<BeaconConcept>> getConcepts(
 			List<String> keywords,
-			List<String> types,
-			Integer pageNumber,
-			Integer pageSize
+			List<String> categories,
+			Integer size
 	) {
-		pageNumber = Utilities.fixPageNumber(pageNumber);
-		pageSize = Utilities.fixPageSize(pageSize);
+		size = Utilities.fixPageSize(size);
 		keywords = Utilities.urlDecode(keywords);
-		types = Utilities.urlDecode(types);
+		categories = Utilities.urlDecode(categories);
 		
-		types = biolinkToUmls(types);
+		categories = biolinkToUmls(categories);
 
-		List<Neo4jConcept> concepts = conceptRepository.apiGetConcepts(keywords, types, pageNumber, pageSize);
+		List<Neo4jConcept> concepts = conceptRepository.apiGetConcepts(keywords, categories, size);
 		List<BeaconConcept> responses = new ArrayList<BeaconConcept>();
 		
 		for (Concept concept : concepts) {
 			BeaconConcept response = new BeaconConcept();
 			
-			String type = umlsToBiolinkLabel(concept.getSemanticGroup().name());
+			String category = umlsToBiolinkLabel(concept.getSemanticGroup().name());
 			
 			response.setId(concept.getId());
 			response.setName(concept.getName());
-			response.setType(type);
+			response.setCategory(category);
 			response.setDefinition(concept.getDescription());
 			response.setSynonyms(Arrays.asList(concept.getSynonyms().split("\\|")));
 
@@ -190,12 +189,10 @@ public class ControllerImpl {
 			
 			BeaconPredicate response = new BeaconPredicate();
 			
-			response.setId(curie);
-			response.setName(name);
+			String edgeLabel = String.join("_", name.split(" "));
 			
-			if(description==null)
-				description = wikidataToBiolinkDescription(curie);
-			response.setDefinition(description);
+			response.setId(curie);
+			response.setEdgeLabel(edgeLabel);
 			
 			responses.add(response);
 		}
@@ -213,8 +210,8 @@ public class ControllerImpl {
 			response.setDefinition(concept.getDescription());
 			response.setId(concept.getId());
 			response.setName(concept.getName());
-			String type = umlsToBiolinkLabel(concept.getSemanticGroup().name());
-			response.setType(type);
+			String category = umlsToBiolinkLabel(concept.getSemanticGroup().name());
+			response.category(category);
 			response.setSynonyms(Arrays.asList(concept.getSynonyms().split("\\|")));
 
 			responses.add(response);
@@ -225,7 +222,7 @@ public class ControllerImpl {
 	
 	//private static final String EXACT_MATCH_RELATION = "wd:P2888"; // "exact match" predicate used for equivalent concept identification?
 	
-	private List<String> getExactMatches(List<String> c) {
+	private List<ExactMatchResponse> getExactMatches(List<String> c) {
 		
 		/*
 		 * RMB, October 11, 2017
@@ -245,36 +242,38 @@ public class ControllerImpl {
 		}
 		*/
 		
-		return new ArrayList<String>();
-	}
-	
-	public ResponseEntity<List<String>> getExactMatchesToConcept(String conceptId) {
-		List<String> c = new ArrayList<String>();
-		c.add(conceptId) ;
-		List<String> responses = getExactMatches(c);
-		// also return back the original conceptId
-		responses.add(conceptId); 
-		return ResponseEntity.ok(responses);
+		List<ExactMatchResponse> response = new ArrayList<ExactMatchResponse>();
+		
+		for (String conceptId : c) {
+			boolean isAvailable = conceptRepository.isConceptAvailable(conceptId);
+			
+			ExactMatchResponse e = new ExactMatchResponse();
+			
+			e.setWithinDomain(isAvailable);
+			e.setId(conceptId);
+			
+			response.add(e);
+		}
+		
+		return response;
 	}
 
-	public ResponseEntity<List<String>> getExactMatchesToConceptList(List<String> c) {
-		List<String> responses = getExactMatches(c);
+	public ResponseEntity<List<ExactMatchResponse>> getExactMatchesToConceptList(List<String> c) {
+		List<ExactMatchResponse> responses = getExactMatches(c);
 		return ResponseEntity.ok(responses);
 	}
 	
 	public ResponseEntity<List<BeaconAnnotation>> getEvidence(String statementId,
 	        List<String> keywords,
-	        Integer pageNumber,
-	        Integer pageSize
+	        Integer size
 	) {
 		// RMB: May 5, 2017 - Statement ID hack here to fix ID truncation problem
 		statementId = statementId.replaceAll("_",".");
 		
-		pageNumber = Utilities.fixPageNumber(pageNumber);
-		pageSize = Utilities.fixPageSize(pageSize);
+		size = Utilities.fixPageSize(size);
 		keywords = Utilities.urlDecode(keywords);
 		
-		List<Map<String, Object>> data = evidenceRepository.apiGetEvidence(statementId, keywords, pageNumber, pageSize);
+		List<Map<String, Object>> data = evidenceRepository.apiGetEvidence(statementId, keywords, size);
 		
 		List<BeaconAnnotation> responses = new ArrayList<BeaconAnnotation>();
 		
@@ -303,19 +302,18 @@ public class ControllerImpl {
 	 * @param relations
 	 * @param t
 	 * @param keywords
-	 * @param types
+	 * @param categories
 	 * @param pageNumber
-	 * @param pageSize
+	 * @param size
 	 * @return
 	 */
 	public ResponseEntity<List<BeaconStatement>> getStatements(
 			List<String> s,
-			String relations,
+			List<String> relations,
 			List<String> t,
 			List<String> keywords,
-			List<String> types, 
-			Integer pageNumber,
-			Integer pageSize
+			List<String> categories, 
+			Integer size
 	) {
 		s = Utilities.urlDecode(s);
 		
@@ -329,9 +327,8 @@ public class ControllerImpl {
 		t = Utilities.urlDecode(t);
 		
 		keywords = Utilities.urlDecode(keywords);
-		types = Utilities.urlDecode(types);
-		pageNumber = Utilities.fixPageNumber(pageNumber);
-		pageSize = Utilities.fixPageSize(pageSize);
+		categories = Utilities.urlDecode(categories);
+		size = Utilities.fixPageSize(size);
 
 		String[] sourceCuries = s.toArray(new String[s.size()]);
 		
@@ -339,20 +336,17 @@ public class ControllerImpl {
 		if( t != null)
 			targetCuries = t.toArray(new String[t.size()]);
 		
-		types = biolinkToUmls(types);
-		
-		String[] predicateFilter = Utilities.buildArray(relations);
+		categories = biolinkToUmls(categories);
 
 		List<BeaconStatement> responses = new ArrayList<BeaconStatement>();
 
 		List<Map<String, Object>> data = statementRepository.findStatements(
 				sourceCuries,
-				predicateFilter,
+				relations,
 				targetCuries,
 				keywords,
-				types,
-				pageNumber,
-				pageSize
+				categories,
+				size
 		);
 
 		for (Map<String, Object> entry : data) {
@@ -378,18 +372,19 @@ public class ControllerImpl {
 			if (subject != null) {
 				statementsSubject.setId(subject.getId());
 				statementsSubject.setName(subject.getName());
-				statementsSubject.setType(umlsToBiolinkLabel(subject.getSemanticGroup().name()));
+				statementsSubject.category(umlsToBiolinkLabel(subject.getSemanticGroup().name()));
 			}
 
 			if (relation != null) {
-				statementsPredicate.setId(relation.getId());
-				statementsPredicate.setName(relation.getName());
+				String edgeLabel = String.join("_", relation.getName().split(" "));
+				statementsPredicate.setRelation(relation.getId());
+				statementsPredicate.setEdgeLabel(edgeLabel);
 			}
 
 			if (object != null) {
 				statementsObject.setId(object.getId());
 				statementsObject.setName(object.getName());
-				statementsObject.setType(umlsToBiolinkLabel(object.getSemanticGroup().name()));
+				statementsObject.setCategory(umlsToBiolinkLabel(object.getSemanticGroup().name()));
 			}
 
 			response.setObject(statementsObject);
@@ -402,14 +397,14 @@ public class ControllerImpl {
 		return ResponseEntity.ok(responses);
 	}
 	
-	public ResponseEntity<List<BeaconConceptType>> getConceptTypes() {
-		List<BeaconConceptType> responses = new ArrayList<BeaconConceptType>();
+	public ResponseEntity<List<BeaconConceptCategory>> getConceptCategories() {
+		List<BeaconConceptCategory> responses = new ArrayList<BeaconConceptCategory>();
 		
 		List<Map<String, Object>> counts = conceptRepository.countAllGroupBySemanticGroup();
 		
 		for (Map<String, Object> map : counts) {
 			
-			BeaconConceptType response = new BeaconConceptType();
+			BeaconConceptCategory response = new BeaconConceptCategory();
 			
 			String local_id = (String) map.get("type");
 
@@ -418,8 +413,8 @@ public class ControllerImpl {
 			if(biolinkTerm!=null) {
 				
 				response.setId(NameSpace.BIOLINK.getCurie(biolinkTerm));
-				response.setLabel(biolinkTerm);
-				response.setIri(NameSpace.BIOLINK.getIri(biolinkTerm));
+				response.setCategory(biolinkTerm);
+				response.setUri(NameSpace.BIOLINK.getIri(biolinkTerm));
 				
 				// TODO: add in local id metadata, etc.
 				//response.setId(local_id);
@@ -463,17 +458,17 @@ public class ControllerImpl {
 			BeaconKnowledgeMapStatement knowledgeMapStatement = new BeaconKnowledgeMapStatement();
 			
 			BeaconKnowledgeMapSubject subject = new BeaconKnowledgeMapSubject();
-			subject.setType(subjectBiolinkTerm);
+			subject.setCategory(subjectBiolinkTerm);
 			knowledgeMapStatement.setSubject(subject);
 
 			BeaconKnowledgeMapObject object = new BeaconKnowledgeMapObject();
-			object.setType(objectBiolinkTerm);
+			object.setCategory(objectBiolinkTerm);
 			knowledgeMapStatement.setObject(object);
 			
 			BeaconKnowledgeMapPredicate predicate = new BeaconKnowledgeMapPredicate();
 			String relationName = (String) triple.get("relationName");
-			predicate.setId(NameSpace.BIOLINK.getCurie(relationName));
-			predicate.setName(relationName);
+//			predicate.setId(NameSpace.BIOLINK.getCurie(relationName));
+			predicate.setRelation(relationName);
 			knowledgeMapStatement.setPredicate(predicate);
 			
 			// Just using the predicate description here?

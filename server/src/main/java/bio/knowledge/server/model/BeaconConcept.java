@@ -1,16 +1,17 @@
 package bio.knowledge.server.model;
 
+import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import io.swagger.annotations.ApiModelProperty;
+import javax.validation.constraints.*;
 /**
  * BeaconConcept
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-03-19T11:44:00.504-07:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-05-08T20:39:58.606-07:00")
 
 public class BeaconConcept   {
   @JsonProperty("id")
@@ -19,8 +20,8 @@ public class BeaconConcept   {
   @JsonProperty("name")
   private String name = null;
 
-  @JsonProperty("type")
-  private String type = null;
+  @JsonProperty("category")
+  private String category = null;
 
   @JsonProperty("synonyms")
   private List<String> synonyms = new ArrayList<String>();
@@ -64,22 +65,22 @@ public class BeaconConcept   {
     this.name = name;
   }
 
-  public BeaconConcept type(String type) {
-    this.type = type;
+  public BeaconConcept category(String category) {
+    this.category = category;
     return this;
   }
 
    /**
    * concept semantic type 
-   * @return type
+   * @return category
   **/
   @ApiModelProperty(value = "concept semantic type ")
-  public String getType() {
-    return type;
+  public String getCategory() {
+    return category;
   }
 
-  public void setType(String type) {
-    this.type = type;
+  public void setCategory(String category) {
+    this.category = category;
   }
 
   public BeaconConcept synonyms(List<String> synonyms) {
@@ -135,14 +136,14 @@ public class BeaconConcept   {
     BeaconConcept beaconConcept = (BeaconConcept) o;
     return Objects.equals(this.id, beaconConcept.id) &&
         Objects.equals(this.name, beaconConcept.name) &&
-        Objects.equals(this.type, beaconConcept.type) &&
+        Objects.equals(this.category, beaconConcept.category) &&
         Objects.equals(this.synonyms, beaconConcept.synonyms) &&
         Objects.equals(this.definition, beaconConcept.definition);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, type, synonyms, definition);
+    return Objects.hash(id, name, category, synonyms, definition);
   }
 
   @Override
@@ -152,7 +153,7 @@ public class BeaconConcept   {
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
-    sb.append("    type: ").append(toIndentedString(type)).append("\n");
+    sb.append("    category: ").append(toIndentedString(category)).append("\n");
     sb.append("    synonyms: ").append(toIndentedString(synonyms)).append("\n");
     sb.append("    definition: ").append(toIndentedString(definition)).append("\n");
     sb.append("}");

@@ -62,13 +62,11 @@ public interface EvidenceRepository extends GraphRepository<Neo4jEvidence> {
 			"    ANY (x IN {filter} WHERE LOWER(annotation.name) CONTAINS LOWER(x)) " +
 			" RETURN annotation, reference.year as year, reference.month as month, reference.day as day " +
 			" ORDER BY reference.year DESC, reference.month DESC, reference.day DESC " +
-			" SKIP  ({pageNumber} - 1) * {pageSize} " +
 			" LIMIT {pageSize} "
 	)
 	public List<Map<String, Object>> apiGetEvidence(
 		@Param("statementId") String statementId,
 		@Param("filter") List<String> filter,
-		@Param("pageNumber") Integer pageNumber,
 		@Param("pageSize") Integer pageSize
 	);
 	

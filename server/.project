@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>server</name>
-	<comment>Reference Knowledge Beacon Using Knowledge.Bio 3.0 Database Access</comment>
+	<comment>Project server created by Buildship.</comment>
 	<projects>
 	</projects>
 	<buildSpec>
