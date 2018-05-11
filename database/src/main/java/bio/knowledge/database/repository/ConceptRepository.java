@@ -71,7 +71,7 @@ public interface ConceptRepository extends Neo4jRepository<Neo4jConcept,Long> {
 	 * @param accessionId
 	 * @return Concept identified by the accessionId
 	 */
-	@Query( "MATCH ( concept:Concept ) WHERE concept.accessionId = {accessionId} RETURN concept")
+	@Query( "MATCH ( concept:Concept ) WHERE LOWER(concept.accessionId) = LOWER({accessionId}) RETURN concept")
 	public Neo4jConcept findById( @Param("accessionId") String accessionId ) ;
 	
 	/**
@@ -137,10 +137,10 @@ public interface ConceptRepository extends Neo4jRepository<Neo4jConcept,Long> {
 
 	public List<Neo4jConcept> findByNameLikeIgnoreCase( @Param("filter") String filter, Pageable pageable );
 	
-	@Query("MATCH (concept:Concept) WHERE concept.accessionid = {accessionId} RETURN COUNT(concept) > 0")
+	@Query("MATCH (concept:Concept) WHERE LOWER(concept.accessionid) = LOWER({accessionId}) RETURN COUNT(concept) > 0")
 	public boolean isConceptAvailable(@Param("accessionId") String accessionId);
 	
-	@Query("MATCH (concept:Concept) WHERE concept.accessionId = {accessionId} RETURN concept;")
+	@Query("MATCH (concept:Concept) WHERE LOWER(concept.accessionId) = LOWER({accessionId}) RETURN concept;")
 	public Concept apiGetConceptById(@Param("accessionId") String accessionId);
 	
 	@Query(
