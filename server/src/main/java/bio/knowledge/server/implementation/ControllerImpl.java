@@ -22,17 +22,14 @@ import bio.knowledge.database.repository.ConceptRepository;
 import bio.knowledge.database.repository.EvidenceRepository;
 import bio.knowledge.database.repository.PredicateRepository;
 import bio.knowledge.database.repository.StatementRepository;
-
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.Predicate;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.model.neo4j.Neo4jPredicate;
-
 import bio.knowledge.ontology.mapping.NameSpace;
 import bio.knowledge.ontology.mapping.umls.UMLSBiolinkMapping;
-
 import bio.knowledge.server.model.BeaconAnnotation;
 import bio.knowledge.server.model.BeaconConcept;
 import bio.knowledge.server.model.BeaconConceptCategory;
@@ -47,7 +44,6 @@ import bio.knowledge.server.model.BeaconStatementObject;
 import bio.knowledge.server.model.BeaconStatementPredicate;
 import bio.knowledge.server.model.BeaconStatementSubject;
 import bio.knowledge.server.model.ExactMatchResponse;
-
 import bio.knowledge.server.utilities.Utilities;
 
 @Controller
@@ -112,7 +108,10 @@ public class ControllerImpl {
 			
 			if(predicate.getName().isEmpty()) continue;
 			
+			// TODO: you need to convert this to the new JSON output format!
+			
 			String curie = predicate.getId();
+			String uri = predicate.getUri();
 			String name = predicate.getName();
 			String description = predicate.getDescription();
 			
@@ -121,7 +120,13 @@ public class ControllerImpl {
 			String edgeLabel = String.join("_", name.split(" "));
 			
 			response.setId(curie);
+			response.setUri(uri);
 			response.setEdgeLabel(edgeLabel);
+			response.setDescription(description);
+			
+			// RKB is Biolink compliant now.. so local ids are the same?
+			response.setLocalId(curie);
+			response.setLocalUri(uri);
 			
 			responses.add(response);
 		}
@@ -400,14 +405,7 @@ public class ControllerImpl {
 			
 			BeaconKnowledgeMapPredicate predicate = new BeaconKnowledgeMapPredicate();
 			
-			/*
-			 * For now, use the actual predicate identifier from the database.
-			 * If and when we translate this into Biolink/local, we'll fix this again?
-			 */
-			String relationId = (String) triple.get("relationId");
-			
 			String relationName = (String) triple.get("relationName");
-//			predicate.setId(NameSpace.BIOLINK.getCurie(relationName));
 			predicate.setRelation(relationName);
 
 			knowledgeMapStatement.setPredicate(predicate);

@@ -1,7 +1,7 @@
 // NCATS Translator Knowledge.Bio (TKBio) Main Meta-Project Root Build File
 
 ext {
-	gradleVersion            = '4.6'
+	gradleVersion            = '4.7'
 	apacheHTTPClientVersion  = '4.5.2'
 	springCoreVersion        = '5.0.4.RELEASE'
 	jacksonXmlVersion        = '2.9.4'
