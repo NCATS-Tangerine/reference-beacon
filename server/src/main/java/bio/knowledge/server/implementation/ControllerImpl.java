@@ -108,25 +108,28 @@ public class ControllerImpl {
 			
 			if(predicate.getName().isEmpty()) continue;
 			
-			// TODO: you need to convert this to the new JSON output format!
-			
-			String curie = predicate.getId();
-			String uri = predicate.getUri();
-			String name = predicate.getName();
+			String local_id = predicate.getId();
+			String local_uri = predicate.getUri();
+			String local_name = predicate.getName();
 			String description = predicate.getDescription();
 			
 			BeaconPredicate response = new BeaconPredicate();
 			
-			String edgeLabel = String.join("_", name.split(" "));
+			String edgeLabel = String.join("_", local_name.split(" "));
 			
-			response.setId(curie);
-			response.setUri(uri);
+			// TODO: eventually need to remap these id's to their Biolink Minimal predicate id's
+			response.setId(local_id);
+			response.setUri(local_uri);
 			response.setEdgeLabel(edgeLabel);
-			response.setDescription(description);
 			
-			// RKB is Biolink compliant now.. so local ids are the same?
-			response.setLocalId(curie);
-			response.setLocalUri(uri);
+			// Here, the maximal == minimal predicate
+			response.setRelation(edgeLabel);
+			
+			response.setLocalId(local_id);
+			response.setLocalUri(local_uri);
+			response.setLocalRelation(edgeLabel);
+			
+			response.setDescription(description);
 			
 			responses.add(response);
 		}
@@ -334,6 +337,7 @@ public class ControllerImpl {
 	}
 	
 	public ResponseEntity<List<BeaconConceptCategory>> getConceptCategories() {
+		
 		List<BeaconConceptCategory> responses = new ArrayList<BeaconConceptCategory>();
 		
 		List<Map<String, Object>> counts = conceptRepository.countAllGroupBySemanticGroup();
@@ -342,24 +346,25 @@ public class ControllerImpl {
 			
 			BeaconConceptCategory response = new BeaconConceptCategory();
 			
-			String local_id = (String) map.get("type");
+			String local_id = (String) map.get("semanticGroup");
 
 			String biolinkTerm = mapping.umlsToBiolinkLabel(local_id);
 
-			if(biolinkTerm!=null) {
+			if( biolinkTerm != null ) {
 				
 				response.setId(NameSpace.BIOLINK.getCurie(biolinkTerm));
 				response.setCategory(biolinkTerm);
-				response.setUri(NameSpace.BIOLINK.getIri(biolinkTerm));
+				response.setUri(NameSpace.BIOLINK.getUri(biolinkTerm));
 				
-				// TODO: add in local id metadata, etc.
-				//response.setId(local_id);
-				//response.setXref(NameSpace.UMLS.getIri(local_id));
-				//String description = umlsToBiolinkDescription(local_id);
+				response.setLocalId(NameSpace.UMLSSG.getCurie(local_id));
+				response.setLocalCategory(local_id);
+				response.setLocalUri(NameSpace.UMLSSG.getUri(local_id));
+				
 				//response.setDescription(description);
 				
 				Long frequency = (Long) map.get("frequency");
 				response.setFrequency(frequency != null ? frequency.intValue() : null);
+				
 				responses.add(response);
 				
 			} else
@@ -406,7 +411,11 @@ public class ControllerImpl {
 			BeaconKnowledgeMapPredicate predicate = new BeaconKnowledgeMapPredicate();
 			
 			String relationName = (String) triple.get("relationName");
-			predicate.setRelation(relationName);
+			
+			// Translator Knowledge Graph standard prescribes 'snake_case'
+			String relation = String.join("_", relationName.split(" "));
+			
+			predicate.setRelation(relation);
 
 			knowledgeMapStatement.setPredicate(predicate);
 			

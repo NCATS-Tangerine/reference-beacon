@@ -214,7 +214,7 @@ public interface ConceptRepository extends Neo4jRepository<Neo4jConcept,Long> {
 	 */
 	@Query( " MATCH (n:Concept) " +
 			" WHERE NOT n.semanticGroup IS NULL "+
-			" RETURN n.semanticGroup AS type, COUNT(n.semanticGroup) AS frequency")
+			" RETURN n.semanticGroup AS semanticGroup, COUNT(n.semanticGroup) AS frequency")
 	public List<Map<String,Object>> countAllGroupBySemanticGroup();
 	
 	/**
