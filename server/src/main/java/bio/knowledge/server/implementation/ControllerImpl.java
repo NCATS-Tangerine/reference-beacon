@@ -356,11 +356,11 @@ public class ControllerImpl {
 				
 				response.setId(NameSpace.BIOLINK.getCurie(biolinkTerm));
 				response.setCategory(biolinkTerm);
-				response.setUri(NameSpace.BIOLINK.getIri(biolinkTerm));
+				response.setUri(NameSpace.BIOLINK.getUri(biolinkTerm));
 				
 				response.setLocalId(NameSpace.UMLSSG.getCurie(local_id));
 				response.setLocalCategory(local_id);
-				response.setLocalUri(NameSpace.UMLSSG.getIri(local_id));
+				response.setLocalUri(NameSpace.UMLSSG.getUri(local_id));
 				
 				//response.setDescription(description);
 				
