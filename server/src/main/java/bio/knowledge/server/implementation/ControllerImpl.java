@@ -101,12 +101,13 @@ public class ControllerImpl {
 
 	public ResponseEntity<List<BeaconPredicate>> getPredicates() {
 		
-		List<Neo4jPredicate> data = predicateRepository.findAllPredicates();
+		List<Map<String, Object>> data = predicateRepository.findAllPredicates();
 				
 		List<BeaconPredicate> responses = new ArrayList<>();
-		for (Predicate predicate : data) {
-			
-			if(predicate.getName().isEmpty()) continue;
+
+		for (Map<String, Object> m : data) {
+			Neo4jPredicate predicate = (Neo4jPredicate) m.get("predicate");
+			Long frequency = (Long) m.get("frequency");
 			
 			String local_id = predicate.getId();
 			String local_uri = predicate.getUri();
@@ -121,6 +122,7 @@ public class ControllerImpl {
 			response.setId(local_id);
 			response.setUri(local_uri);
 			response.setEdgeLabel(edgeLabel);
+			response.setFrequency(frequency.intValue());
 			
 			// Here, the maximal == minimal predicate
 			response.setRelation(edgeLabel);
@@ -181,16 +183,16 @@ public class ControllerImpl {
 		}
 		*/
 		
+		List<String> m = conceptRepository.getKnownConceptIds(c);
+		
 		List<ExactMatchResponse> response = new ArrayList<ExactMatchResponse>();
 		
 		for (String conceptId : c) {
-			boolean isAvailable = conceptRepository.isConceptAvailable(conceptId);
-			
 			ExactMatchResponse e = new ExactMatchResponse();
-			
-			e.setWithinDomain(isAvailable);
 			e.setId(conceptId);
-			
+			e.setWithinDomain(m.contains(conceptId));
+			//TODO: Find exact matches?
+//			e.setHasExactMatches(hasExactMatches);
 			response.add(e);
 		}
 		
@@ -354,11 +356,11 @@ public class ControllerImpl {
 				
 				response.setId(NameSpace.BIOLINK.getCurie(biolinkTerm));
 				response.setCategory(biolinkTerm);
-				response.setUri(NameSpace.BIOLINK.getUri(biolinkTerm));
+				response.setUri(NameSpace.BIOLINK.getIri(biolinkTerm));
 				
 				response.setLocalId(NameSpace.UMLSSG.getCurie(local_id));
 				response.setLocalCategory(local_id);
-				response.setLocalUri(NameSpace.UMLSSG.getUri(local_id));
+				response.setLocalUri(NameSpace.UMLSSG.getIri(local_id));
 				
 				//response.setDescription(description);
 				

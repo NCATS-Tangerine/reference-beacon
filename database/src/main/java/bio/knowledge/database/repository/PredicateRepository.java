@@ -26,6 +26,7 @@
 package bio.knowledge.database.repository;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
@@ -66,7 +67,11 @@ public interface PredicateRepository extends Neo4jRepository<Neo4jPredicate,Long
 	@Query("MATCH (predicate:Predicate) WHERE predicate.name = {name} RETURN DISTINCT predicate")
 	Neo4jPredicate findPredicateByName(@Param("name")String name);
 	
-	@Query("MATCH (predicate:Predicate) RETURN predicate")
-	List<Neo4jPredicate> findAllPredicates();
+	@Query(	" MATCH (predicate:Predicate)-[]-(statement:Statement) " + 
+			" WHERE NOT predicate.name IS NULL AND NOT predicate.accessionId IS NULL " +
+			" RETURN DISTINCT " + 
+			" predicate AS predicate, " +
+			" COUNT(*) AS frequency")
+	List<Map<String, Object>> findAllPredicates();
 
 }
