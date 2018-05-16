@@ -105,16 +105,13 @@ public class ControllerImpl {
 
 	public ResponseEntity<List<BeaconPredicate>> getPredicates() {
 		
-		List<Neo4jPredicate> data = predicateRepository.findAllPredicates();
+		List<Map<String, Object>> data = predicateRepository.findAllPredicates();
 				
 		List<BeaconPredicate> responses = new ArrayList<>();
-		for (Predicate predicate : data) {
-			
-			if(predicate.getName().isEmpty()) continue;
-			
-			String curie = predicate.getId();
-			String name = predicate.getName();
-			String description = predicate.getDescription();
+		for (Map<String, Object> m : data) {
+			String name = (String) m.get("predicate");
+			Long frequency = (Long) m.get("frequency");
+			String curie = (String) m.get("id");
 			
 			BeaconPredicate response = new BeaconPredicate();
 			
@@ -122,6 +119,7 @@ public class ControllerImpl {
 			
 			response.setId(curie);
 			response.setEdgeLabel(edgeLabel);
+			response.setFrequency(frequency.intValue());
 			
 			responses.add(response);
 		}
@@ -173,16 +171,16 @@ public class ControllerImpl {
 		}
 		*/
 		
+		List<String> m = conceptRepository.getKnownConceptIds(c);
+		
 		List<ExactMatchResponse> response = new ArrayList<ExactMatchResponse>();
 		
 		for (String conceptId : c) {
-			boolean isAvailable = conceptRepository.isConceptAvailable(conceptId);
-			
 			ExactMatchResponse e = new ExactMatchResponse();
-			
-			e.setWithinDomain(isAvailable);
 			e.setId(conceptId);
-			
+			e.setWithinDomain(m.contains(conceptId));
+			//TODO: Find exact matches?
+//			e.setHasExactMatches(hasExactMatches);
 			response.add(e);
 		}
 		
