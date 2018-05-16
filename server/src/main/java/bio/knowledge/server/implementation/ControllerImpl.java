@@ -22,17 +22,14 @@ import bio.knowledge.database.repository.ConceptRepository;
 import bio.knowledge.database.repository.EvidenceRepository;
 import bio.knowledge.database.repository.PredicateRepository;
 import bio.knowledge.database.repository.StatementRepository;
-
 import bio.knowledge.model.Annotation;
 import bio.knowledge.model.Concept;
 import bio.knowledge.model.Predicate;
 import bio.knowledge.model.Statement;
 import bio.knowledge.model.neo4j.Neo4jConcept;
 import bio.knowledge.model.neo4j.Neo4jPredicate;
-
 import bio.knowledge.ontology.mapping.NameSpace;
 import bio.knowledge.ontology.mapping.umls.UMLSBiolinkMapping;
-
 import bio.knowledge.server.model.BeaconAnnotation;
 import bio.knowledge.server.model.BeaconConcept;
 import bio.knowledge.server.model.BeaconConceptCategory;
@@ -47,7 +44,6 @@ import bio.knowledge.server.model.BeaconStatementObject;
 import bio.knowledge.server.model.BeaconStatementPredicate;
 import bio.knowledge.server.model.BeaconStatementSubject;
 import bio.knowledge.server.model.ExactMatchResponse;
-
 import bio.knowledge.server.utilities.Utilities;
 
 @Controller
@@ -108,18 +104,34 @@ public class ControllerImpl {
 		List<Map<String, Object>> data = predicateRepository.findAllPredicates();
 				
 		List<BeaconPredicate> responses = new ArrayList<>();
+
 		for (Map<String, Object> m : data) {
-			String name = (String) m.get("predicate");
+			Neo4jPredicate predicate = (Neo4jPredicate) m.get("predicate");
 			Long frequency = (Long) m.get("frequency");
-			String curie = (String) m.get("id");
+			
+			String local_id = predicate.getId();
+			String local_uri = predicate.getUri();
+			String local_name = predicate.getName();
+			String description = predicate.getDescription();
 			
 			BeaconPredicate response = new BeaconPredicate();
 			
-			String edgeLabel = String.join("_", name.split(" "));
+			String edgeLabel = String.join("_", local_name.split(" "));
 			
-			response.setId(curie);
+			// TODO: eventually need to remap these id's to their Biolink Minimal predicate id's
+			response.setId(local_id);
+			response.setUri(local_uri);
 			response.setEdgeLabel(edgeLabel);
 			response.setFrequency(frequency.intValue());
+			
+			// Here, the maximal == minimal predicate
+			response.setRelation(edgeLabel);
+			
+			response.setLocalId(local_id);
+			response.setLocalUri(local_uri);
+			response.setLocalRelation(edgeLabel);
+			
+			response.setDescription(description);
 			
 			responses.add(response);
 		}
@@ -327,6 +339,7 @@ public class ControllerImpl {
 	}
 	
 	public ResponseEntity<List<BeaconConceptCategory>> getConceptCategories() {
+		
 		List<BeaconConceptCategory> responses = new ArrayList<BeaconConceptCategory>();
 		
 		List<Map<String, Object>> counts = conceptRepository.countAllGroupBySemanticGroup();
@@ -335,24 +348,25 @@ public class ControllerImpl {
 			
 			BeaconConceptCategory response = new BeaconConceptCategory();
 			
-			String local_id = (String) map.get("type");
+			String local_id = (String) map.get("semanticGroup");
 
 			String biolinkTerm = mapping.umlsToBiolinkLabel(local_id);
 
-			if(biolinkTerm!=null) {
+			if( biolinkTerm != null ) {
 				
 				response.setId(NameSpace.BIOLINK.getCurie(biolinkTerm));
 				response.setCategory(biolinkTerm);
 				response.setUri(NameSpace.BIOLINK.getIri(biolinkTerm));
 				
-				// TODO: add in local id metadata, etc.
-				//response.setId(local_id);
-				//response.setXref(NameSpace.UMLS.getIri(local_id));
-				//String description = umlsToBiolinkDescription(local_id);
+				response.setLocalId(NameSpace.UMLSSG.getCurie(local_id));
+				response.setLocalCategory(local_id);
+				response.setLocalUri(NameSpace.UMLSSG.getIri(local_id));
+				
 				//response.setDescription(description);
 				
 				Long frequency = (Long) map.get("frequency");
 				response.setFrequency(frequency != null ? frequency.intValue() : null);
+				
 				responses.add(response);
 				
 			} else
@@ -398,15 +412,12 @@ public class ControllerImpl {
 			
 			BeaconKnowledgeMapPredicate predicate = new BeaconKnowledgeMapPredicate();
 			
-			/*
-			 * For now, use the actual predicate identifier from the database.
-			 * If and when we translate this into Biolink/local, we'll fix this again?
-			 */
-			String relationId = (String) triple.get("relationId");
-			
 			String relationName = (String) triple.get("relationName");
-//			predicate.setId(NameSpace.BIOLINK.getCurie(relationName));
-			predicate.setRelation(relationName);
+			
+			// Translator Knowledge Graph standard prescribes 'snake_case'
+			String relation = String.join("_", relationName.split(" "));
+			
+			predicate.setRelation(relation);
 
 			knowledgeMapStatement.setPredicate(predicate);
 			

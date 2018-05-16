@@ -85,7 +85,7 @@ public class ConceptTests {
 		System.out.println("... dumped here...");
 		for(Map<String,Object> entry : result ) {
 			System.out.println(
-					"Type: "+entry.getOrDefault("type", "Unknown").toString()+
+					"Type: "+entry.getOrDefault("semanticGroup", "Unknown").toString()+
 				  ", Count: "+entry.getOrDefault("frequency", "Unknown").toString());
 		}
 	}

@@ -70,8 +70,7 @@ public interface PredicateRepository extends Neo4jRepository<Neo4jPredicate,Long
 	@Query(	" MATCH (predicate:Predicate)-[]-(statement:Statement) " + 
 			" WHERE NOT predicate.name IS NULL AND NOT predicate.accessionId IS NULL " +
 			" RETURN DISTINCT " + 
-			" predicate.name AS predicate, " +
-			" predicate.accessionId AS id, " + 
+			" predicate AS predicate, " +
 			" COUNT(*) AS frequency")
 	List<Map<String, Object>> findAllPredicates();
 
